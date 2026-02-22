@@ -1,0 +1,141 @@
+<html>
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1251">
+<meta name=Generator content="Microsoft Word 15 (filtered)">
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:8.0pt;
+	margin-left:0in;
+	line-height:107%;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+h2
+	{mso-style-link:"Заголовок 2 Знак";
+	margin-right:0in;
+	margin-left:0in;
+	text-align:center;
+	font-size:18.0pt;
+	font-family:"Times New Roman",serif;
+	font-weight:bold;}
+p
+	{margin-right:0in;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman",serif;}
+span.2
+	{mso-style-name:"Заголовок 2 Знак";
+	mso-style-link:"Заголовок 2";
+	font-family:"Times New Roman",serif;
+	font-weight:bold;}
+.MsoChpDefault
+	{font-family:"Calibri",sans-serif;}
+.MsoPapDefault
+	{margin-bottom:8.0pt;
+	line-height:107%;}
+@page WordSection1
+	{size:8.5in 11.0in;
+	margin:56.7pt 42.5pt 56.7pt 85.05pt;}
+div.WordSection1
+	{page:WordSection1;}
+-->
+</style>
+
+</head>
+
+<body lang=EN-US>
+
+<div class=WordSection1>
+
+<h2><span lang=UK>ТЕХНІЧНЕ ЗАВДАННЯ</span></h2>
+
+<p><span lang=UK style='font-size:14.0pt'>на виконання розрахунково-графічної
+роботи з дисципліни «Моделювання систем»</span></p>
+
+<p><strong><span lang=UK style='font-size:14.0pt'>Тема:</span></strong><span
+lang=UK style='font-size:14.0pt'> </span><span style='font-size:14.0pt'>Моделювання
+роботи супермаркету, варіант «</span><span lang=UK style='font-size:14.0pt'>19/</span><span
+style='font-size:14.0pt'>SuperMarket»</span></p>
+
+<p><strong><span lang=UK style='font-size:14.0pt'>Виконавець:</span></strong><span
+lang=UK style='font-size:14.0pt'> Сергієнко Ю.С., гр. КІ-231</span></p>
+
+<p><strong><span lang=UK style='font-size:14.0pt'>Опис системи</span></strong></p>
+
+<p><span lang=UK style='font-size:14.0pt'>У кар’єрі здійснюється видобуток і
+переробка руди за допомогою скоординованої роботи кількох компонентів.
+Екскаватор видобуває руду, яку самоскиди транспортують до каменедробарки. Якщо
+дробарка вільна, самоскиди вивантажують руду в бункер, звідки вона надходить на
+обробку. У разі зайнятості дробарки руда скидається на площадку, де
+накопичується до певного обсягу. Для завантаження руди з площадки в дробарку
+використовується навантажувач, який активується за потреби. Система
+характеризується випадковими інтервалами між подіями, такими як видобуток руди
+екскаватором, транспортування самоскидами та обробка дробаркою, що потребує
+моделювання з використанням генераторів випадкових величин.</span></p>
+
+<p><strong><span lang=UK style='font-size:14.0pt'>Завдання на проєктування</span></strong></p>
+
+<p><span lang=UK style='font-size:14.0pt'>Створити Java застосування для
+імітаційного моделювання, яке дозволить:</span></p>
+
+<p><span lang=UK style='font-size:14.0pt'>1. </span><span style='font-size:
+14.0pt'>Налаштовувати параметри моделі через компоненти інтерфейсу, зокрема
+продуктивність екскаватора (негативний експоненційний розподіл із параметром
+50), продуктивність каменедробарки (нормальний розподіл із середнім 45 і
+відхиленням 8), продуктивність навантажувача (нормальний розподіл із середнім
+30 і відхиленням 5), кількість самоскидів (фіксоване значення 8), місткість
+бункера (50 одиниць), порцію руди в самоскиді (6 одиниць) і час моделювання
+(500 одиниць).</span></p>
+
+<p><span lang=UK style='font-size:14.0pt'>2. </span><span style='font-size:
+14.0pt'>Генерувати випадкові величини для моделювання часу між подіями
+(видобуток, транспортування, обробка) з використанням відповідних законів
+розподілу.</span></p>
+
+<p><span lang=UK style='font-size:14.0pt'>3. </span><span style='font-size:
+14.0pt'>Візуалізувати динаміку роботи кар’єру через панель «Test» із чотирма
+діаграмами: черга самоскидів до екскаватора, черга до навантажувача, розмір
+купи руди на площадці та стан каменедробарки.</span></p>
+
+<p><span lang=UK style='font-size:14.0pt'>4. </span><span style='font-size:
+14.0pt'>Забезпечити автоматичне оновлення шкал діаграм (вертикальних і
+горизонтальних) у реальному часі при зміні параметрів моделі через події caretUpdate
+для компонентів chooseData.</span></p>
+
+<p><span lang=UK style='font-size:14.0pt'>5. </span><span style='font-size:
+14.0pt'>Реалізувати ініціалізацію діаграм значеннями за замовчуванням при
+активації вкладки «Test» через метод tabbedPaneStateChanged.</span></p>
+
+<p><span lang=UK style='font-size:14.0pt'>6. </span><span style='font-size:
+14.0pt'>Додати елементи керування на панелі «Test», зокрема кнопку «Start» для
+запуску симуляції та прапорець «Console logger» для увімкнення логування в
+консоль.</span></p>
+
+<p><strong><span lang=UK style='font-size:14.0pt'>Орієнтовна трудомісткість
+роботи –</span></strong><span lang=UK style='font-size:14.0pt'> 36
+людино-годин.</span></p>
+
+<p><strong><span lang=UK style='font-size:14.0pt'>Дата представлення роботи –</span></strong><span
+lang=UK style='font-size:14.0pt'> останній тиждень 2-го семестру</span></p>
+
+<p><strong><span lang=UK style='font-size:14.0pt'>Керівник роботи –</span></strong><span
+lang=UK style='font-size:14.0pt'> доцент Бивойно П.Г.</span></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+</div>
+
+</body>
+
+</html>

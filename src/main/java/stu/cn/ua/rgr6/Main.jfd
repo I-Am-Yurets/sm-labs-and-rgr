@@ -1,0 +1,313 @@
+JFDML JFormDesigner: "8.2.4.0.393" Java: "21.0.3" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+			name: "this"
+			"title": "Computational-graphical work. Denys Lysenok, KI-221"
+			"$sizePolicy": 1
+			add( new FormContainer( "javax.swing.JSplitPane", new FormLayoutManager( class javax.swing.JSplitPane ) ) {
+				name: "splitPane"
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+					"$layoutConstraints": "hidemode 3,aligny center"
+					"$columnConstraints": "[262,fill]"
+					"$rowConstraints": "[][][][][][][][][]"
+				} ) {
+					name: "leftSettingModelPanel"
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "Title"
+						"text": "Parameters of the system under study "
+						"font": new java.awt.Font( "Segoe UI", 0, 14 )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 0,alignx center,growx 0"
+					} )
+					add( new FormComponent( "widgets.ChooseRandom" ) {
+						name: "chooseRandomExcavator"
+						"border": new javax.swing.border.CompoundBorder( new javax.swing.border.EtchedBorder( 1, null, null ), new javax.swing.border.TitledBorder( new javax.swing.border.LineBorder( new java.awt.Color( 0, 0, 0, 255 ), 1, false ), "Excavator productivity", 2, 2, new java.awt.Font( "Segoe UI", 0, 14 ), sfield java.awt.Color lightGray ) )
+						auxiliary() {
+							"JavaCodeGenerator.postInitCode": "chooseRandomExcavator.setRandom(new Negexp(50));"
+							"JavaCodeGenerator.variableGetter": true
+						}
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 1,aligny center,growy 0"
+					} )
+					add( new FormComponent( "widgets.ChooseRandom" ) {
+						name: "chooseRandomCrusher"
+						"border": new javax.swing.border.CompoundBorder( new javax.swing.border.EtchedBorder( 1, null, null ), new javax.swing.border.TitledBorder( new javax.swing.border.LineBorder( new java.awt.Color( 0, 0, 0, 255 ), 1, false ), "Stone crusher productivity", 2, 2, new java.awt.Font( "Segoe UI", 0, 14 ), sfield java.awt.Color lightGray ) )
+						auxiliary() {
+							"JavaCodeGenerator.postInitCode": "chooseRandomCrusher.setRandom(new Norm(45, 8));"
+							"JavaCodeGenerator.variableGetter": true
+						}
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 2,aligny center,growy 0"
+					} )
+					add( new FormComponent( "widgets.ChooseRandom" ) {
+						name: "chooseRandomLoader"
+						"border": new javax.swing.border.CompoundBorder( new javax.swing.border.EtchedBorder( 1, null, null ), new javax.swing.border.TitledBorder( new javax.swing.border.LineBorder( new java.awt.Color( 0, 0, 0, 255 ), 1, false ), "Loader productivity", 2, 2, new java.awt.Font( "Segoe UI", 0, 14 ), sfield java.awt.Color lightGray ) )
+						auxiliary() {
+							"JavaCodeGenerator.postInitCode": "chooseRandomLoader.setRandom(new Norm(30, 5));"
+							"JavaCodeGenerator.variableGetter": true
+						}
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 3,aligny center,growy 0"
+					} )
+					add( new FormComponent( "widgets.ChooseData" ) {
+						name: "chooseDataDumper"
+						"background": new java.awt.Color( 60, 63, 65, 255 )
+						"title": "Number of dumpers"
+						"border": new javax.swing.border.CompoundBorder( new javax.swing.border.TitledBorder( &EtchedBorder0 new javax.swing.border.EtchedBorder( 0, null, null ), "Number of dumpers", 2, 3, new java.awt.Font( "Dialog", 0, 14 ), null ), &BevelBorder0 new javax.swing.border.BevelBorder( 1, null, null, null, null ) )
+						"font": new java.awt.Font( "Segoe UI", 0, 14 )
+						"minimumSize": new java.awt.Dimension( 50, 55 )
+						auxiliary() {
+							"JavaCodeGenerator.postInitCode": "chooseDataDumper.setInt(8);"
+							"JavaCodeGenerator.variableGetter": true
+						}
+						addEvent( new FormEvent( "javax.swing.event.CaretListener", "caretUpdate", "chooseDataDumperCaretUpdate", true ) )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 4,aligny center,growy 0"
+					} )
+					add( new FormComponent( "widgets.ChooseData" ) {
+						name: "chooseDataBunkerCapacity"
+						"background": &Color0 new java.awt.Color( 60, 63, 65, 255 )
+						"title": "Bunker capacity"
+						"border": new javax.swing.border.CompoundBorder( new javax.swing.border.TitledBorder( #EtchedBorder0, "Bunker capacity", 2, 3, &Font0 new java.awt.Font( "Dialog", 0, 14 ), null ), #BevelBorder0 )
+						"font": &Font1 new java.awt.Font( "Segoe UI", 0, 14 )
+						"minimumSize": &Dimension0 new java.awt.Dimension( 50, 55 )
+						auxiliary() {
+							"JavaCodeGenerator.postInitCode": "chooseDataBunkerCapacity.setInt(50);"
+							"JavaCodeGenerator.variableGetter": true
+						}
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 5,aligny center,growy 0"
+					} )
+					add( new FormComponent( "widgets.ChooseData" ) {
+						name: "chooseDataPortionOreDumpTruck"
+						"background": #Color0
+						"title": "Portion of ore in a dump truck"
+						"border": new javax.swing.border.CompoundBorder( new javax.swing.border.TitledBorder( #EtchedBorder0, "Portion of ore in a dump truck", 2, 3, #Font0, null ), #BevelBorder0 )
+						"font": #Font1
+						"minimumSize": #Dimension0
+						auxiliary() {
+							"JavaCodeGenerator.postInitCode": "chooseDataPortionOreDumpTruck.setInt(6);"
+							"JavaCodeGenerator.variableGetter": true
+						}
+						addEvent( new FormEvent( "javax.swing.event.CaretListener", "caretUpdate", "chooseDataPortionOreDumpTruckCaretUpdate", true ) )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 6,aligny center,growy 0"
+					} )
+					add( new FormComponent( "widgets.ChooseData" ) {
+						name: "chooseDataOrePileSize"
+						"background": #Color0
+						"title": "Ore pile size"
+						"border": new javax.swing.border.CompoundBorder( new javax.swing.border.TitledBorder( #EtchedBorder0, "Ore pile size", 2, 3, #Font0, null ), #BevelBorder0 )
+						"font": #Font1
+						"minimumSize": #Dimension0
+						auxiliary() {
+							"JavaCodeGenerator.postInitCode": "chooseDataOrePileSize.setInt(3);"
+							"JavaCodeGenerator.variableGetter": true
+						}
+						addEvent( new FormEvent( "javax.swing.event.CaretListener", "caretUpdate", "chooseDataOrePileSizeCaretUpdate", true ) )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 7,aligny center,growy 0"
+					} )
+					add( new FormComponent( "widgets.ChooseData" ) {
+						name: "chooseDataSimulationTime"
+						"background": new java.awt.Color( 60, 63, 65, 255 )
+						"title": "Simulation time"
+						"border": new javax.swing.border.CompoundBorder( new javax.swing.border.TitledBorder( #EtchedBorder0, "Simulation time", 2, 3, new java.awt.Font( "Dialog", 0, 14 ), null ), #BevelBorder0 )
+						"font": new java.awt.Font( "Segoe UI", 0, 14 )
+						"minimumSize": new java.awt.Dimension( 50, 55 )
+						auxiliary() {
+							"JavaCodeGenerator.postInitCode": "chooseDataSimulationTime.setInt(500);"
+							"JavaCodeGenerator.variableGetter": true
+						}
+						addEvent( new FormEvent( "javax.swing.event.CaretListener", "caretUpdate", "chooseDataSimulationTimeCaretUpdate", true ) )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 8,aligny center,growy 0"
+					} )
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "left"
+				} )
+				add( new FormContainer( "javax.swing.JTabbedPane", new FormLayoutManager( class javax.swing.JTabbedPane ) ) {
+					name: "tabbedPane"
+					addEvent( new FormEvent( "javax.swing.event.ChangeListener", "stateChanged", "tabbedPaneStateChanged", true ) )
+					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+						name: "taskScrollPanel"
+						add( new FormComponent( "javax.swing.JTextPane" ) {
+							name: "textHtmTask"
+							"editable": false
+							"font": new java.awt.Font( "Segoe UI", 0, 12 )
+						} )
+					}, new FormLayoutConstraints( null ) {
+						"title": "Task"
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+						"$layoutConstraints": "hidemode 3"
+						"$columnConstraints": "[646,grow,fill]"
+						"$rowConstraints": "[grow][grow]rel[grow][][][]"
+					} ) {
+						name: "testPanel"
+						add( new FormComponent( "widgets.Diagram" ) {
+							name: "diagramQueueDumpTrucksToExcavator"
+							"titleText": "Queue of dump trucks to the excavator"
+							"panelBackground": new java.awt.Color( 87, 89, 89, 255 )
+							"gridColor": new java.awt.Color( 153, 153, 153, 255 )
+							"painterColor": new java.awt.Color( 204, 0, 0, 255 )
+							"gridByX": 10
+							auxiliary() {
+								"JavaCodeGenerator.variableGetter": true
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 0,grow"
+						} )
+						add( new FormComponent( "widgets.Diagram" ) {
+							name: "diagramQueueToLoader"
+							"titleText": "Queue to the loader"
+							"panelBackground": new java.awt.Color( 87, 89, 89, 255 )
+							"gridColor": new java.awt.Color( 153, 153, 153, 255 )
+							"painterColor": new java.awt.Color( 204, 0, 0, 255 )
+							"gridByX": 10
+							auxiliary() {
+								"JavaCodeGenerator.variableGetter": true
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 1,grow"
+						} )
+						add( new FormComponent( "widgets.Diagram" ) {
+							name: "diagramOrePileSize"
+							"titleText": "Ore pile size"
+							"panelBackground": &Color1 new java.awt.Color( 87, 89, 89, 255 )
+							"gridColor": &Color2 new java.awt.Color( 153, 153, 153, 255 )
+							"painterColor": &Color3 new java.awt.Color( 204, 0, 0, 255 )
+							"gridByX": 10
+							auxiliary() {
+								"JavaCodeGenerator.variableGetter": true
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 2,grow"
+						} )
+						add( new FormComponent( "widgets.Diagram" ) {
+							name: "diagramCrusherCondition"
+							"titleText": "Crusher condition"
+							"panelBackground": #Color1
+							"gridColor": #Color2
+							"painterColor": #Color3
+							"gridByX": 10
+							auxiliary() {
+								"JavaCodeGenerator.variableGetter": true
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 3,grow"
+						} )
+						add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+							name: "diagramInteractionPanel"
+							add( new FormComponent( "javax.swing.JCheckBox" ) {
+								name: "consoleLoggerCheckBox"
+								"text": "Console logger"
+								"preferredSize": new java.awt.Dimension( 200, 20 )
+								"font": new java.awt.Font( "Segoe UI", 0, 14 )
+								auxiliary() {
+									"JavaCodeGenerator.variableGetter": true
+								}
+							}, new FormLayoutConstraints( class java.lang.String ) {
+								"value": "West"
+							} )
+							add( new FormComponent( "javax.swing.JButton" ) {
+								name: "diagramStartbutton"
+								"text": "Start"
+								"font": new java.awt.Font( "Segoe UI", 0, 14 )
+								addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "startTest", true ) )
+							}, new FormLayoutConstraints( class java.lang.String ) {
+								"value": "East"
+							} )
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 4"
+						} )
+					}, new FormLayoutConstraints( null ) {
+						"title": "Test"
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+						"$layoutConstraints": "hidemode 3"
+						"$columnConstraints": "[646,grow,fill]"
+						"$rowConstraints": "[grow]rel"
+					} ) {
+						name: "statPanel"
+						add( new FormComponent( "widgets.stat.StatisticsManager" ) {
+							name: "statisticsManager"
+							"border": new javax.swing.border.LineBorder( sfield java.awt.Color black, 1, false )
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 0,grow"
+						} )
+					}, new FormLayoutConstraints( null ) {
+						"title": "Stat"
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+						"$layoutConstraints": "hidemode 3"
+						"$columnConstraints": "[646,grow,fill]"
+						"$rowConstraints": "[grow]rel"
+					} ) {
+						name: "regresPanel"
+						add( new FormComponent( "widgets.experiments.ExperimentManager" ) {
+							name: "experimentManager"
+							auxiliary() {
+								"JavaCodeGenerator.postInitCode": "experimentManager.getChooseDataRepeat().setTitle(\"Number of dump trucks\");"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 0,grow"
+						} )
+					}, new FormLayoutConstraints( null ) {
+						"title": "Regres"
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+						"$layoutConstraints": "hidemode 3"
+						"$columnConstraints": "[fill][fill]"
+						"$rowConstraints": "[][][]"
+					} ) {
+						name: "transientPanel"
+					}, new FormLayoutConstraints( null ) {
+						"title": "Transient"
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+						"$layoutConstraints": "hidemode 3"
+						"$columnConstraints": "[649,grow,fill]"
+						"$rowConstraints": "[319,grow][108]"
+					} ) {
+						name: "infoPanel"
+						"minimumSize": new java.awt.Dimension( 887, 135 )
+						add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.jformdesigner.runtime.NullLayout ) ) {
+							name: "photoPanel"
+							"preferredSize": new java.awt.Dimension( 1500, 1500 )
+							"minimumSize": new java.awt.Dimension( 1500, 1500 )
+							auxiliary() {
+								"JavaCodeGenerator.preInitCode": "photoPanel = createPhotoPanel();"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 0"
+						} )
+						add( new FormComponent( "javax.swing.JTextArea" ) {
+							name: "textInfoAuthor"
+							"text": "Author of the project:\nLysenok Denys Vitaliiovych,\n3rd year student majoring in Computer Engineering\nEmail: cerobreath@gmail.com\nGitHub: cerobreath"
+							"font": new java.awt.Font( "Segoe UI", 0, 16 )
+							"editable": false
+							auxiliary() {
+								"JavaCodeGenerator.preInitCode": "photoPanel.setPreferredSize(new Dimension(1500, 1500));"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 1"
+						} )
+					}, new FormLayoutConstraints( null ) {
+						"title": "Info"
+					} )
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "right"
+				} )
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "Center"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 45, 0 )
+			"size": new java.awt.Dimension( 960, 865 )
+		} )
+	}
+}

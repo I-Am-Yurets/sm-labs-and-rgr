@@ -1,0 +1,70 @@
+JFDML JFormDesigner: "8.2.4.0.393" Java: "21.0.3" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+			name: "this"
+			"iconImage": sfield com.jformdesigner.model.FormObject NULL_VALUE
+			"$sizePolicy": 1
+			"title": "Laboratory work №1. Denys Lysenok, KI-221"
+			"resizable": false
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+				name: "dialogPane"
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+					"$layoutConstraints": "insets dialog,hidemode 3"
+					"$columnConstraints": "[496,fill][339,fill]"
+					"$rowConstraints": "[374][][][][][45][][][][][0]"
+				} ) {
+					name: "contentPanel"
+					add( new FormComponent( "widgets.Diagram" ) {
+						name: "diagram"
+						"titleText": "Histogram"
+						"minimumSize": new java.awt.Dimension( 470, 380 )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 0,align center center,grow 0 0"
+					} )
+					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+						name: "scrollPane"
+						"minimumSize": new java.awt.Dimension( 18, 405 )
+						"horizontalScrollBarPolicy": 31
+						"viewportBorder": new javax.swing.border.MatteBorder( 1, 1, 1, 1, sfield java.awt.Color black )
+						add( new FormComponent( "javax.swing.JTextArea" ) {
+							name: "textArea"
+							"minimumSize": new java.awt.Dimension( 62, 100 )
+							"editable": false
+							"lineWrap": true
+							"wrapStyleWord": true
+							"font": new java.awt.Font( "Segoe UI", 0, 14 )
+						} )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 1 0,aligny top,grow 100 0"
+					} )
+					add( new FormComponent( "widgets.ChooseData" ) {
+						name: "chooseData"
+						"background": new java.awt.Color( 60, 63, 65, 255 )
+						"title": "Sample size"
+						"minimumSize": new java.awt.Dimension( 100, 50 )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 2 1 3"
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "button"
+						"text": "Start"
+						"font": new com.jformdesigner.model.SwingDerivedFont( null, 0, 1, false )
+						"minimumSize": new java.awt.Dimension( 20, 26 )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 2 1 3,align center center,grow 0 0"
+					} )
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "Center"
+				} )
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "Center"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 20, 5 )
+			"size": new java.awt.Dimension( 855, 530 )
+		} )
+	}
+}
