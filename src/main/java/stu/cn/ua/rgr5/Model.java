@@ -57,7 +57,7 @@ public class Model implements IStatisticsable {
         getQueueToCashier().setPainter(gui.getDiagramQueueToCashier().getPainter());
         getLostCustomers().setPainter(gui.getDiagramLostCustomers().getPainter());
         dispatcher.setProtocolFileName(
-            gui.getConsoleLoggerCheckBox().isSelected() ? "Console" : "");
+                gui.getConsoleLoggerCheckBox().isSelected() ? "Console" : "");
     }
 
     public Customer getCustomer() {
@@ -70,7 +70,7 @@ public class Model implements IStatisticsable {
             customer.setCustomersInStore(getCustomersInStore());
             customer.setLostCustomers(getLostCustomers());
             customer.setMaxQueueSize(gui.getChooseDataMaxQueueSize().getDouble());
-            customer.setMaxCustomersInStore(gui.getChooseDataMaxCustomersInStore().getDouble());
+            customer.setMaxCustomersInStore(Double.MAX_VALUE);
             customer.setArrivalRnd(gui.getChooseRandomCustomerArrival().getRandom());
             customer.setShoppingRnd(gui.getChooseRandomShoppingTime().getRandom());
             customer.setFinishTime(gui.getChooseDataSimulationTime().getDouble());

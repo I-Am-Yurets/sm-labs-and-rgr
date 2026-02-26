@@ -28,7 +28,6 @@ public class Model implements IStatisticsable, IExperimentable, ITransProcesable
 
     // ── Параметри, зчитані з GUI у конструкторі ───────────────────────────────
     private final double paramMaxQueueSize;
-    private final double paramMaxCustomersInStore;
     private final rnd.Randomable paramArrivalRnd;
     private final rnd.Randomable paramShoppingRnd;
     private final rnd.Randomable paramServiceRnd;
@@ -62,7 +61,6 @@ public class Model implements IStatisticsable, IExperimentable, ITransProcesable
 
         // Зчитуємо всі параметри GUI одразу — до старту Dispatcher
         paramMaxQueueSize        = g.getChooseDataMaxQueueSize().getDouble();
-        paramMaxCustomersInStore = g.getChooseDataMaxCustomersInStore().getDouble();
         paramArrivalRnd          = g.getChooseRandomCustomerArrival().getRandom();
         paramShoppingRnd         = g.getChooseRandomShoppingTime().getRandom();
         paramServiceRnd          = g.getChooseRandomCashierService().getRandom();
@@ -95,7 +93,7 @@ public class Model implements IStatisticsable, IExperimentable, ITransProcesable
             customer.setCustomersInStore(getCustomersInStore());
             customer.setLostCustomers(getLostCustomers());
             customer.setMaxQueueSize(paramMaxQueueSize);
-            customer.setMaxCustomersInStore(paramMaxCustomersInStore);
+            customer.setMaxCustomersInStore(Double.MAX_VALUE);
             customer.setArrivalRnd(paramArrivalRnd);
             customer.setShoppingRnd(paramShoppingRnd);
             customer.setFinishTime(paramFinishTime);
@@ -204,7 +202,7 @@ public class Model implements IStatisticsable, IExperimentable, ITransProcesable
         getCashier().setFinishTime(finishTime);
         // GUI — тільки на EDT
         SwingUtilities.invokeLater(
-            () -> gui.getChooseDataSimulationTime().setDouble(finishTime));
+                () -> gui.getChooseDataSimulationTime().setDouble(finishTime));
     }
 
     @Override

@@ -84,9 +84,10 @@ public class Model {
             customer.setCustomersInStore(getCustomersInStore());
             customer.setLostCustomers(getLostCustomers());
             customer.setMaxQueueSize(gui.getChooseDataMaxQueueSize().getDouble());
-            customer.setMaxCustomersInStore(gui.getChooseDataMaxCustomersInStore().getDouble());
+            customer.setMaxCustomersInStore(Double.MAX_VALUE);
             customer.setArrivalRnd(gui.getChooseRandomCustomerArrival().getRandom());
             customer.setShoppingRnd(gui.getChooseRandomShoppingTime().getRandom());
+            customer.setPurchasesRnd(gui.getChooseRandomPurchasesPerCustomer().getRandom());
             customer.setFinishTime(gui.getChooseDataSimulationTime().getDouble());
         }
         return customer;
@@ -129,7 +130,7 @@ public class Model {
     public QueueForTransactions<Customer> getQueueToCashier() {
         if (queueToCashier == null) {
             queueToCashier = new QueueForTransactions<>(
-                "Черга до кас", dispatcher, histoQueueToCashier);
+                    "Черга до кас", dispatcher, histoQueueToCashier);
             queueToCashier.setNameForProtocol("Черга до кас");
         }
         return queueToCashier;

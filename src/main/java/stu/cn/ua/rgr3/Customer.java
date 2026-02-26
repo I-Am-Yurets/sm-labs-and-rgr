@@ -35,6 +35,8 @@ public class Customer extends Actor {
     private Randomable arrivalRnd;
     /** Генератор часу перебування у торговельному залі. */
     private Randomable shoppingRnd;
+    /** Генератор кількості покупок (Ерланг, з округленням до цілих). */
+    private Randomable purchasesRnd;
 
     /** Прапор, який касир встановлює в true після розрахунку. */
     private volatile boolean isServed = false;
@@ -55,21 +57,23 @@ public class Customer extends Actor {
                 // Покупець не заходить
                 lostCustomers.add(1);
                 getDispatcher().printToProtocol(
-                    getNameForProtocol() + " не зайшов до магазину (черга=" +
-                    queueToCashier.size() + ", зал=" + customersInStore.getSize() + ")");
+                        getNameForProtocol() + " не зайшов до магазину (черга=" +
+                                queueToCashier.size() + ", зал=" + customersInStore.getSize() + ")");
                 continue;
             }
 
             // Покупець заходить у зал
             customersInStore.add(1);
             getDispatcher().printToProtocol(
-                getNameForProtocol() + " зайшов до залу (зараз у залі: " +
-                customersInStore.getSize() + ")");
+                    getNameForProtocol() + " зайшов до залу (зараз у залі: " +
+                            customersInStore.getSize() + ")");
 
-            // Ходить по магазину
-            holdForTime(shoppingRnd.next());
+            // Ходить по магазину (кількість покупок визначається генератором Ерланга)
+            int numPurchases = (purchasesRnd != null) ? (int) Math.round(purchasesRnd.next()) : 1;
+            if (numPurchases < 1) numPurchases = 1;
+            holdForTime(shoppingRnd.next() * numPurchases);
             getDispatcher().printToProtocol(
-                getNameForProtocol() + " зібрав покупки, стає у чергу до каси");
+                    getNameForProtocol() + " зібрав " + numPurchases + " покупок, стає у чергу до каси");
 
             // Стає в чергу
             isServed = false;
@@ -81,8 +85,8 @@ public class Customer extends Actor {
             // Виходить з магазину
             customersInStore.remove(1);
             getDispatcher().printToProtocol(
-                getNameForProtocol() + " покинув магазин (у залі залишилось: " +
-                customersInStore.getSize() + ")");
+                    getNameForProtocol() + " покинув магазин (у залі залишилось: " +
+                            customersInStore.getSize() + ")");
         }
     }
 
@@ -123,5 +127,9 @@ public class Customer extends Actor {
 
     public void setShoppingRnd(Randomable shoppingRnd) {
         this.shoppingRnd = shoppingRnd;
+    }
+
+    public void setPurchasesRnd(Randomable purchasesRnd) {
+        this.purchasesRnd = purchasesRnd;
     }
 }

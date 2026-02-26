@@ -5,12 +5,13 @@
 package stu.cn.ua.rgr4;
 
 import java.awt.event.*;
-import com.formdev.flatlaf.FlatDarculaLaf;
+import com.formdev.flatlaf.FlatLightLaf;
 import net.miginfocom.swing.MigLayout;
 import process.Dispatcher;
 import process.IModelFactory;
 import rnd.Negexp;
 import rnd.Norm;
+import rnd.Erlang;
 import widgets.ChooseData;
 import widgets.ChooseRandom;
 import widgets.Diagram;
@@ -41,7 +42,7 @@ public class Main extends JFrame {
 
     public static void main(String[] args) {
         try {
-            UIManager.setLookAndFeel(new FlatDarculaLaf());
+            UIManager.setLookAndFeel(new FlatLightLaf());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -63,8 +64,7 @@ public class Main extends JFrame {
 
     public ChooseData getChooseDataCashiers()              { return chooseDataCashiers; }
     public ChooseData getChooseDataMaxQueueSize()          { return chooseDataMaxQueueSize; }
-    public ChooseData getChooseDataMaxCustomersInStore()   { return chooseDataMaxCustomersInStore; }
-    public ChooseData getChooseDataPurchasesPerCustomer()  { return chooseDataPurchasesPerCustomer; }
+    public ChooseRandom getChooseRandomPurchasesPerCustomer() { return chooseRandomPurchasesPerCustomer; }
     public ChooseData getChooseDataSimulationTime()        { return chooseDataSimulationTime; }
 
     public Diagram getDiagramQueueToCashier()    { return diagramQueueToCashier; }
@@ -100,16 +100,6 @@ public class Main extends JFrame {
         }
     }
 
-    private void chooseDataMaxCustomersInStoreCaretUpdate(CaretEvent e) {
-        if (testPanel.isShowing()) {
-            try {
-                diagramCustomersInStore.setVerticalMaxText(chooseDataMaxCustomersInStore.getText());
-            } catch (Exception ex) {
-                System.err.println("Error: " + ex.getMessage());
-            }
-        }
-    }
-
     private void chooseDataCashiersCaretUpdate(CaretEvent e) {
         if (testPanel.isShowing()) {
             try {
@@ -130,7 +120,6 @@ public class Main extends JFrame {
                 diagramCashierLoad.setHorizontalMaxText(simTime);
 
                 diagramQueueToCashier.setVerticalMaxText(chooseDataMaxQueueSize.getText());
-                diagramCustomersInStore.setVerticalMaxText(chooseDataMaxCustomersInStore.getText());
                 diagramCashierLoad.setVerticalMaxText(chooseDataCashiers.getText());
             } catch (Exception ex) {
                 System.err.println("Error initializing diagram settings: " + ex.getMessage());
@@ -169,8 +158,7 @@ public class Main extends JFrame {
         chooseRandomCashierService = new ChooseRandom();
         chooseDataCashiers = new ChooseData();
         chooseDataMaxQueueSize = new ChooseData();
-        chooseDataMaxCustomersInStore = new ChooseData();
-        chooseDataPurchasesPerCustomer = new ChooseData();
+        chooseRandomPurchasesPerCustomer = new ChooseRandom();
         chooseDataSimulationTime = new ChooseData();
         tabbedPane = new JTabbedPane();
         taskScrollPanel = new JScrollPane();
@@ -200,9 +188,9 @@ public class Main extends JFrame {
             //======== leftSettingModelPanel ========
             {
                 leftSettingModelPanel.setLayout(new MigLayout(
-                    "hidemode 3,aligny center",
-                    "[262,fill]",
-                    "[][][][][][][][][]"));
+                        "hidemode 3,aligny center",
+                        "[262,fill]",
+                        "[][][][][][][][][]"));
 
                 //---- Title ----
                 Title.setText("Параметри системи, що досліджується");
@@ -211,39 +199,39 @@ public class Main extends JFrame {
 
                 //---- chooseRandomCustomerArrival ----
                 chooseRandomCustomerArrival.setBorder(new CompoundBorder(
-                    new EtchedBorder(),
-                    new TitledBorder(LineBorder.createBlackLineBorder(),
-                        "Інтервал приходу покупців", TitledBorder.CENTER, TitledBorder.TOP,
-                        new Font("Segoe UI", Font.PLAIN, 14), Color.lightGray)));
+                        new EtchedBorder(),
+                        new TitledBorder(LineBorder.createBlackLineBorder(),
+                                "Інтервал приходу покупців", TitledBorder.CENTER, TitledBorder.TOP,
+                                new Font("Segoe UI", Font.PLAIN, 14), Color.DARK_GRAY)));
                 chooseRandomCustomerArrival.setRandom(new Negexp(10));
                 leftSettingModelPanel.add(chooseRandomCustomerArrival, "cell 0 1,aligny center,growy 0");
 
                 //---- chooseRandomShoppingTime ----
                 chooseRandomShoppingTime.setBorder(new CompoundBorder(
-                    new EtchedBorder(),
-                    new TitledBorder(LineBorder.createBlackLineBorder(),
-                        "Час перебування покупця в залі", TitledBorder.CENTER, TitledBorder.TOP,
-                        new Font("Segoe UI", Font.PLAIN, 14), Color.lightGray)));
+                        new EtchedBorder(),
+                        new TitledBorder(LineBorder.createBlackLineBorder(),
+                                "Час перебування покупця в залі", TitledBorder.CENTER, TitledBorder.TOP,
+                                new Font("Segoe UI", Font.PLAIN, 14), Color.DARK_GRAY)));
                 chooseRandomShoppingTime.setRandom(new Norm(30, 8));
                 leftSettingModelPanel.add(chooseRandomShoppingTime, "cell 0 2,aligny center,growy 0");
 
                 //---- chooseRandomCashierService ----
                 chooseRandomCashierService.setBorder(new CompoundBorder(
-                    new EtchedBorder(),
-                    new TitledBorder(LineBorder.createBlackLineBorder(),
-                        "Час обслуговування касиром", TitledBorder.CENTER, TitledBorder.TOP,
-                        new Font("Segoe UI", Font.PLAIN, 14), Color.lightGray)));
+                        new EtchedBorder(),
+                        new TitledBorder(LineBorder.createBlackLineBorder(),
+                                "Час обслуговування касиром", TitledBorder.CENTER, TitledBorder.TOP,
+                                new Font("Segoe UI", Font.PLAIN, 14), Color.DARK_GRAY)));
                 chooseRandomCashierService.setRandom(new Norm(5, 2));
                 leftSettingModelPanel.add(chooseRandomCashierService, "cell 0 3,aligny center,growy 0");
 
                 //---- chooseDataCashiers ----
-                chooseDataCashiers.setBackground(new Color(0x3c3f41));
+
                 chooseDataCashiers.setTitle("Кількість кас (касирів)");
                 chooseDataCashiers.setBorder(new CompoundBorder(
-                    new TitledBorder(new EtchedBorder(EtchedBorder.RAISED),
-                        "Кількість кас (касирів)", TitledBorder.CENTER, TitledBorder.BELOW_TOP,
-                        new Font("Dialog", Font.PLAIN, 14)),
-                    new BevelBorder(BevelBorder.LOWERED)));
+                        new TitledBorder(new EtchedBorder(EtchedBorder.RAISED),
+                                "Кількість кас (касирів)", TitledBorder.CENTER, TitledBorder.BELOW_TOP,
+                                new Font("Dialog", Font.PLAIN, 14)),
+                        new BevelBorder(BevelBorder.LOWERED)));
                 chooseDataCashiers.setFont(new Font("Segoe UI", Font.PLAIN, 14));
                 chooseDataCashiers.setMinimumSize(new Dimension(50, 55));
                 chooseDataCashiers.addCaretListener(e -> chooseDataCashiersCaretUpdate(e));
@@ -251,59 +239,41 @@ public class Main extends JFrame {
                 leftSettingModelPanel.add(chooseDataCashiers, "cell 0 4,aligny center,growy 0");
 
                 //---- chooseDataMaxQueueSize ----
-                chooseDataMaxQueueSize.setBackground(new Color(0x3c3f41));
+
                 chooseDataMaxQueueSize.setTitle("Критичний розмір черги до каси");
                 chooseDataMaxQueueSize.setBorder(new CompoundBorder(
-                    new TitledBorder(new EtchedBorder(EtchedBorder.RAISED),
-                        "Критичний розмір черги до каси", TitledBorder.CENTER, TitledBorder.BELOW_TOP,
-                        new Font("Dialog", Font.PLAIN, 14)),
-                    new BevelBorder(BevelBorder.LOWERED)));
+                        new TitledBorder(new EtchedBorder(EtchedBorder.RAISED),
+                                "Критичний розмір черги до каси", TitledBorder.CENTER, TitledBorder.BELOW_TOP,
+                                new Font("Dialog", Font.PLAIN, 14)),
+                        new BevelBorder(BevelBorder.LOWERED)));
                 chooseDataMaxQueueSize.setFont(new Font("Segoe UI", Font.PLAIN, 14));
                 chooseDataMaxQueueSize.setMinimumSize(new Dimension(50, 55));
                 chooseDataMaxQueueSize.addCaretListener(e -> chooseDataMaxQueueSizeCaretUpdate(e));
                 chooseDataMaxQueueSize.setInt(5);
                 leftSettingModelPanel.add(chooseDataMaxQueueSize, "cell 0 5,aligny center,growy 0");
 
-                //---- chooseDataMaxCustomersInStore ----
-                chooseDataMaxCustomersInStore.setBackground(new Color(0x3c3f41));
-                chooseDataMaxCustomersInStore.setTitle("Макс. покупців у залі");
-                chooseDataMaxCustomersInStore.setBorder(new CompoundBorder(
-                    new TitledBorder(new EtchedBorder(EtchedBorder.RAISED),
-                        "Макс. покупців у залі", TitledBorder.CENTER, TitledBorder.BELOW_TOP,
-                        new Font("Dialog", Font.PLAIN, 14)),
-                    new BevelBorder(BevelBorder.LOWERED)));
-                chooseDataMaxCustomersInStore.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-                chooseDataMaxCustomersInStore.setMinimumSize(new Dimension(50, 55));
-                chooseDataMaxCustomersInStore.addCaretListener(e -> chooseDataMaxCustomersInStoreCaretUpdate(e));
-                chooseDataMaxCustomersInStore.setInt(20);
-                leftSettingModelPanel.add(chooseDataMaxCustomersInStore, "cell 0 6,aligny center,growy 0");
-
-                //---- chooseDataPurchasesPerCustomer ----
-                chooseDataPurchasesPerCustomer.setBackground(new Color(0x3c3f41));
-                chooseDataPurchasesPerCustomer.setTitle("Середня кількість покупок");
-                chooseDataPurchasesPerCustomer.setBorder(new CompoundBorder(
-                    new TitledBorder(new EtchedBorder(EtchedBorder.RAISED),
-                        "Середня кількість покупок", TitledBorder.CENTER, TitledBorder.BELOW_TOP,
-                        new Font("Dialog", Font.PLAIN, 14)),
-                    new BevelBorder(BevelBorder.LOWERED)));
-                chooseDataPurchasesPerCustomer.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-                chooseDataPurchasesPerCustomer.setMinimumSize(new Dimension(50, 55));
-                chooseDataPurchasesPerCustomer.setInt(5);
-                leftSettingModelPanel.add(chooseDataPurchasesPerCustomer, "cell 0 7,aligny center,growy 0");
+                //---- chooseRandomPurchasesPerCustomer ----
+                chooseRandomPurchasesPerCustomer.setBorder(new CompoundBorder(
+                        new EtchedBorder(),
+                        new TitledBorder(LineBorder.createBlackLineBorder(),
+                                "Кількість покупок (Ерланг)", TitledBorder.CENTER, TitledBorder.TOP,
+                                new Font("Segoe UI", Font.PLAIN, 14), Color.DARK_GRAY)));
+                chooseRandomPurchasesPerCustomer.setRandom(new Erlang(5, 2, true));
+                leftSettingModelPanel.add(chooseRandomPurchasesPerCustomer, "cell 0 6,aligny center,growy 0");
 
                 //---- chooseDataSimulationTime ----
-                chooseDataSimulationTime.setBackground(new Color(0x3c3f41));
+
                 chooseDataSimulationTime.setTitle("Час моделювання");
                 chooseDataSimulationTime.setBorder(new CompoundBorder(
-                    new TitledBorder(new EtchedBorder(EtchedBorder.RAISED),
-                        "Час моделювання", TitledBorder.CENTER, TitledBorder.BELOW_TOP,
-                        new Font("Dialog", Font.PLAIN, 14)),
-                    new BevelBorder(BevelBorder.LOWERED)));
+                        new TitledBorder(new EtchedBorder(EtchedBorder.RAISED),
+                                "Час моделювання", TitledBorder.CENTER, TitledBorder.BELOW_TOP,
+                                new Font("Dialog", Font.PLAIN, 14)),
+                        new BevelBorder(BevelBorder.LOWERED)));
                 chooseDataSimulationTime.setFont(new Font("Segoe UI", Font.PLAIN, 14));
                 chooseDataSimulationTime.setMinimumSize(new Dimension(50, 55));
                 chooseDataSimulationTime.addCaretListener(e -> chooseDataSimulationTimeCaretUpdate(e));
                 chooseDataSimulationTime.setInt(500);
-                leftSettingModelPanel.add(chooseDataSimulationTime, "cell 0 8,aligny center,growy 0");
+                leftSettingModelPanel.add(chooseDataSimulationTime, "cell 0 7,aligny center,growy 0");
             }
             splitPane.setLeftComponent(leftSettingModelPanel);
 
@@ -322,38 +292,38 @@ public class Main extends JFrame {
                 //======== testPanel ========
                 {
                     testPanel.setLayout(new MigLayout(
-                        "hidemode 3",
-                        "[646,grow,fill]",
-                        "[grow][grow]rel[grow][grow][][]"));
+                            "hidemode 3",
+                            "[646,grow,fill]",
+                            "[grow][grow]rel[grow][grow][][]"));
 
                     //---- diagramQueueToCashier ----
                     diagramQueueToCashier.setTitleText("Черга покупців до кас");
-                    diagramQueueToCashier.setPanelBackground(new Color(0x575959));
-                    diagramQueueToCashier.setGridColor(new Color(0x999999));
+                    diagramQueueToCashier.setPanelBackground(Color.WHITE);
+                    diagramQueueToCashier.setGridColor(new Color(0xCCCCCC));
                     diagramQueueToCashier.setPainterColor(new Color(0x3399ff));
                     diagramQueueToCashier.setGridByX(10);
                     testPanel.add(diagramQueueToCashier, "cell 0 0,grow");
 
                     //---- diagramCustomersInStore ----
                     diagramCustomersInStore.setTitleText("Покупці у торговельному залі");
-                    diagramCustomersInStore.setPanelBackground(new Color(0x575959));
-                    diagramCustomersInStore.setGridColor(new Color(0x999999));
+                    diagramCustomersInStore.setPanelBackground(Color.WHITE);
+                    diagramCustomersInStore.setGridColor(new Color(0xCCCCCC));
                     diagramCustomersInStore.setPainterColor(new Color(0x33cc33));
                     diagramCustomersInStore.setGridByX(10);
                     testPanel.add(diagramCustomersInStore, "cell 0 1,grow");
 
                     //---- diagramLostCustomers ----
                     diagramLostCustomers.setTitleText("Втрачені покупці (не зайшли до магазину)");
-                    diagramLostCustomers.setPanelBackground(new Color(0x575959));
-                    diagramLostCustomers.setGridColor(new Color(0x999999));
+                    diagramLostCustomers.setPanelBackground(Color.WHITE);
+                    diagramLostCustomers.setGridColor(new Color(0xCCCCCC));
                     diagramLostCustomers.setPainterColor(new Color(0xcc0000));
                     diagramLostCustomers.setGridByX(10);
                     testPanel.add(diagramLostCustomers, "cell 0 2,grow");
 
                     //---- diagramCashierLoad ----
                     diagramCashierLoad.setTitleText("Завантаженість касирів");
-                    diagramCashierLoad.setPanelBackground(new Color(0x575959));
-                    diagramCashierLoad.setGridColor(new Color(0x999999));
+                    diagramCashierLoad.setPanelBackground(Color.WHITE);
+                    diagramCashierLoad.setGridColor(new Color(0xCCCCCC));
                     diagramCashierLoad.setPainterColor(new Color(0xffaa00));
                     diagramCashierLoad.setGridByX(10);
                     testPanel.add(diagramCashierLoad, "cell 0 3,grow");
@@ -428,8 +398,8 @@ public class Main extends JFrame {
 
                     photoPanel.setPreferredSize(new Dimension(1500, 1500));
                     textInfoAuthor.setText(
-                        "Автор проекту:\nСергієнко Юрій Сергійович,\nстудент 3 курсу, спеціальність Комп'ютерна інженерія\n" +
-                        "Варіант 19 – Моделювання роботи супермаркету");
+                            "Автор проекту:\nСергієнко Юрій Сергійович,\nстудент 3 курсу, спеціальність Комп'ютерна інженерія\n" +
+                                    "Варіант 19 – Моделювання роботи супермаркету");
                     textInfoAuthor.setFont(new Font("Segoe UI", Font.PLAIN, 16));
                     textInfoAuthor.setEditable(false);
                     infoPanel.add(textInfoAuthor, "cell 0 1");
@@ -498,8 +468,7 @@ public class Main extends JFrame {
     private ChooseRandom chooseRandomCashierService;
     private ChooseData chooseDataCashiers;
     private ChooseData chooseDataMaxQueueSize;
-    private ChooseData chooseDataMaxCustomersInStore;
-    private ChooseData chooseDataPurchasesPerCustomer;
+    private ChooseRandom chooseRandomPurchasesPerCustomer;
     private ChooseData chooseDataSimulationTime;
     private JTabbedPane tabbedPane;
     private JScrollPane taskScrollPanel;

@@ -296,3 +296,85 @@ new FormModel {
 		} )
 	}
 }
+/**
+ * Варіант 19 – Моделювання роботи супермаркету (SuperMarket)
+ *
+ * РГР-2: додані діаграми та кнопка запуску тесту (без реалізації моделі).
+ *
+ * Діаграми:
+ *   diagramQueueToCashier       – черга покупців до кас
+ *   diagramCustomersInStore     – кількість покупців у торговельному залі
+ *   diagramLostCustomers        – кількість втрачених покупців (не зайшли до магазину)
+ *   diagramCashierLoad          – завантаженість касирів
+ *
+ * @author Student, КІ-23x
+ */
+public class Main extends javax.swing.JFrame {
+
+    private final Main main;
+
+    public Main(Main main) {
+        this.main = main;
+        initComponents();
+        loadHtmlTask();
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            Main frame = new Main();
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setVisible(true);
+        });
+    }
+
+    // ── Getters for Model ──────────────────────────────────────────────────────
+
+    public ChooseRandom getChooseRandomCustomerArrival() { return chooseRandomCustomerArrival; }
+    public ChooseRandom getChooseRandomShoppingTime()    { return chooseRandomShoppingTime; }
+    public ChooseRandom getChooseRandomCashierService()  { return chooseRandomCashierService; }
+
+    public ChooseData getChooseDataCashiers()             { return chooseDataCashiers; }
+    public ChooseData getChooseDataMaxQueueSize()         { return chooseDataMaxQueueSize; }
+    public ChooseRandom getChooseRandomPurchasesPerCustomer() { return chooseRandomPurchasesPerCustomer; }
+    public ChooseData getChooseDataSimulationTime()       { return chooseDataSimulationTime; }
+
+    public Diagram getDiagramQueueToCashier()    { return diagramQueueToCashier; }
+    public Diagram getDiagramCustomersInStore()  { return diagramCustomersInStore; }
+    public Diagram getDiagramLostCustomers()     { return diagramLostCustomers; }
+    public Diagram getDiagramCashierLoad()       { return diagramCashierLoad; }
+
+    public JCheckBox getConsoleLoggerCheckBox() { return consoleLoggerCheckBox; }
+
+    // ── Caret listeners ───────────────────────────────────────────────────────
+
+    private void chooseDataSimulationTimeCaretUpdate(CaretEvent e) {
+        if (testPanel.isShowing()) {
+            try {
+                String simTime = chooseDataSimulationTime.getText();
+                diagramQueueToCashier.setHorizontalMaxText(simTime);
+                diagramCustomersInStore.setHorizontalMaxText(simTime);
+                diagramLostCustomers.setHorizontalMaxText(simTime);
+                diagramCashierLoad.setHorizontalMaxText(simTime);
+            } catch (Exception ex) {
+                System.err.println("Error updating simulation time: " + ex.getMessage());
+            }
+        }
+    }
+
+    private void chooseDataMaxQueueSizeCaretUpdate(CaretEvent e) {
+        if (testPanel.isShowing()) {
+            try {
+                diagramQueueToCashier.setVerticalMaxText(chooseDataMaxQueueSize.getText());
+            } catch (Exception ex) {
+                System.err.println("Error: " + ex.getMessage());
+            }
+        }
+    }
+
+        if (testPanel.isShowing()) {
+            try {
+            } catch (Exception ex) {
+                System.err.println("Error: " + ex.getMessage());
+            }
+        }
+    }

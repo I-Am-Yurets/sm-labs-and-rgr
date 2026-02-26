@@ -25,7 +25,6 @@ public class Model implements IStatisticsable, IExperimentable {
 
     // ── Параметри, зчитані з GUI у конструкторі ───────────────────────────────
     private final double paramMaxQueueSize;
-    private final double paramMaxCustomersInStore;
     private final rnd.Randomable paramArrivalRnd;
     private final rnd.Randomable paramShoppingRnd;
     private final rnd.Randomable paramServiceRnd;
@@ -59,7 +58,6 @@ public class Model implements IStatisticsable, IExperimentable {
 
         // Зчитуємо всі параметри GUI одразу — до старту Dispatcher
         paramMaxQueueSize        = g.getChooseDataMaxQueueSize().getDouble();
-        paramMaxCustomersInStore = g.getChooseDataMaxCustomersInStore().getDouble();
         paramArrivalRnd          = g.getChooseRandomCustomerArrival().getRandom();
         paramShoppingRnd         = g.getChooseRandomShoppingTime().getRandom();
         paramServiceRnd          = g.getChooseRandomCashierService().getRandom();
@@ -80,7 +78,7 @@ public class Model implements IStatisticsable, IExperimentable {
         getQueueToCashier().setPainter(gui.getDiagramQueueToCashier().getPainter());
         getLostCustomers().setPainter(gui.getDiagramLostCustomers().getPainter());
         dispatcher.setProtocolFileName(
-            paramConsoleLog ? "Console" : "");
+                paramConsoleLog ? "Console" : "");
     }
 
     public Customer getCustomer() {
@@ -93,7 +91,7 @@ public class Model implements IStatisticsable, IExperimentable {
             customer.setCustomersInStore(getCustomersInStore());
             customer.setLostCustomers(getLostCustomers());
             customer.setMaxQueueSize(paramMaxQueueSize);
-            customer.setMaxCustomersInStore(paramMaxCustomersInStore);
+            customer.setMaxCustomersInStore(Double.MAX_VALUE);
             customer.setArrivalRnd(paramArrivalRnd);
             customer.setShoppingRnd(paramShoppingRnd);
             customer.setFinishTime(paramFinishTime);
