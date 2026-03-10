@@ -95,22 +95,22 @@ public class Main extends JFrame {
             //======== contentPanel ========
             {
                 contentPanel.setLayout(new MigLayout(
-                    "insets dialog,hidemode 3",
-                    // columns
-                    "[496,fill]" +
-                    "[339,fill]",
-                    // rows
-                    "[374]" +
-                    "[]" +
-                    "[]" +
-                    "[]" +
-                    "[]" +
-                    "[45]" +
-                    "[]" +
-                    "[]" +
-                    "[]" +
-                    "[]" +
-                    "[0]"));
+                        "insets dialog,hidemode 3",
+                        // columns
+                        "[496,fill]" +
+                                "[339,fill]",
+                        // rows
+                        "[374]" +
+                                "[]" +
+                                "[]" +
+                                "[]" +
+                                "[]" +
+                                "[45]" +
+                                "[]" +
+                                "[]" +
+                                "[]" +
+                                "[]" +
+                                "[0]"));
 
                 //---- diagram ----
                 diagram.setTitleText("Histogram");

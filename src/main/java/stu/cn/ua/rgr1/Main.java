@@ -66,12 +66,13 @@ public class Main extends JFrame {
         splitPane = new JSplitPane();
         leftSettingModelPanel = new JPanel();
         Title = new JLabel();
-        chooseRandomCustomerArrival = new ChooseRandom();
-        chooseRandomShoppingTime = new ChooseRandom();
-        chooseRandomCashierService = new ChooseRandom();
-        chooseDataCashiers = new ChooseData();
-        chooseDataMaxQueueSize = new ChooseData();
-        chooseRandomPurchasesPerCustomer = new ChooseRandom();
+        chooseRandomExcavator = new ChooseRandom();
+        chooseRandomCrusher = new ChooseRandom();
+        chooseRandomLoader = new ChooseRandom();
+        chooseDataDumpTrucks = new ChooseData();
+        chooseDataTransportTime = new ChooseData();
+        chooseDataUnloadTimeBunker = new ChooseData();
+        chooseDataUnloadTimeSite = new ChooseData();
         tabbedPane = new JTabbedPane();
         taskScrollPanel = new JScrollPane();
         textHtmTask = new JTextPane();
@@ -84,147 +85,191 @@ public class Main extends JFrame {
         textInfoAuthor = new JTextArea();
 
         //======== this ========
-        setTitle("Розрахунково-графічна робота. Варіант 19 – Супермаркет");
+        setTitle("Computational-graphical work. Denys Lysenok, KI-221");
+        setResizable(false);
         var contentPane = getContentPane();
         contentPane.setLayout(new BorderLayout());
 
         //======== splitPane ========
         {
+
             //======== leftSettingModelPanel ========
             {
                 leftSettingModelPanel.setLayout(new MigLayout(
-                        "hidemode 3,aligny center",
-                        // columns
-                        "[262,fill]",
-                        // rows
-                        "[][][][] [][][]"));
+                    "hidemode 3,aligny center",
+                    // columns
+                    "[262,fill]",
+                    // rows
+                    "[]" +
+                    "[]" +
+                    "[]" +
+                    "[]" +
+                    "[]" +
+                    "[]" +
+                    "[]" +
+                    "[]"));
 
                 //---- Title ----
-                Title.setText("Параметри системи, що досліджується");
+                Title.setText("Parameters of the system under study ");
                 Title.setFont(new Font("Segoe UI", Font.PLAIN, 14));
                 leftSettingModelPanel.add(Title, "cell 0 0,alignx center,growx 0");
 
-                //---- chooseRandomCustomerArrival ----
-                chooseRandomCustomerArrival.setBorder(new CompoundBorder(
-                        new EtchedBorder(),
-                        new TitledBorder(LineBorder.createBlackLineBorder(),
-                                "Інтервал приходу покупців", TitledBorder.CENTER, TitledBorder.TOP,
-                                new Font("Segoe UI", Font.PLAIN, 14), Color.DARK_GRAY)));
-                leftSettingModelPanel.add(chooseRandomCustomerArrival, "cell 0 1,aligny center,growy 0");
+                //---- chooseRandomExcavator ----
+                chooseRandomExcavator.setBorder(new CompoundBorder(
+                    new EtchedBorder(),
+                    new TitledBorder(LineBorder.createBlackLineBorder(), "Excavator productivity", TitledBorder.CENTER, TitledBorder.TOP,
+                        new Font("Segoe UI", Font.PLAIN, 14), Color.lightGray)));
+                leftSettingModelPanel.add(chooseRandomExcavator, "cell 0 1,aligny center,growy 0");
 
-                //---- chooseRandomShoppingTime ----
-                chooseRandomShoppingTime.setBorder(new CompoundBorder(
-                        new EtchedBorder(),
-                        new TitledBorder(LineBorder.createBlackLineBorder(),
-                                "Час перебування покупця в залі", TitledBorder.CENTER, TitledBorder.TOP,
-                                new Font("Segoe UI", Font.PLAIN, 14), Color.DARK_GRAY)));
-                leftSettingModelPanel.add(chooseRandomShoppingTime, "cell 0 2,aligny center,growy 0");
+                //---- chooseRandomCrusher ----
+                chooseRandomCrusher.setBorder(new CompoundBorder(
+                    new EtchedBorder(),
+                    new TitledBorder(LineBorder.createBlackLineBorder(), "Stone crusher productivity", TitledBorder.CENTER, TitledBorder.TOP,
+                        new Font("Segoe UI", Font.PLAIN, 14), Color.lightGray)));
+                leftSettingModelPanel.add(chooseRandomCrusher, "cell 0 2,aligny center,growy 0");
 
-                //---- chooseRandomCashierService ----
-                chooseRandomCashierService.setBorder(new CompoundBorder(
-                        new EtchedBorder(),
-                        new TitledBorder(LineBorder.createBlackLineBorder(),
-                                "Час обслуговування касиром", TitledBorder.CENTER, TitledBorder.TOP,
-                                new Font("Segoe UI", Font.PLAIN, 14), Color.DARK_GRAY)));
-                leftSettingModelPanel.add(chooseRandomCashierService, "cell 0 3,aligny center,growy 0");
+                //---- chooseRandomLoader ----
+                chooseRandomLoader.setBorder(new CompoundBorder(
+                    new EtchedBorder(),
+                    new TitledBorder(LineBorder.createBlackLineBorder(), "Forklift productivity", TitledBorder.CENTER, TitledBorder.TOP,
+                        new Font("Segoe UI", Font.PLAIN, 14), Color.lightGray)));
+                leftSettingModelPanel.add(chooseRandomLoader, "cell 0 3,aligny center,growy 0");
 
-                //---- chooseDataCashiers ----
-                chooseDataCashiers.setTitle("Кількість кас (касирів)");
-                chooseDataCashiers.setBorder(new CompoundBorder(
-                        new TitledBorder(new EtchedBorder(EtchedBorder.RAISED),
-                                "Кількість кас (касирів)", TitledBorder.CENTER, TitledBorder.BELOW_TOP,
-                                new Font("Dialog", Font.PLAIN, 14)),
-                        new BevelBorder(BevelBorder.LOWERED)));
-                chooseDataCashiers.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-                chooseDataCashiers.setMinimumSize(new Dimension(50, 55));
-                leftSettingModelPanel.add(chooseDataCashiers, "cell 0 4,aligny center,growy 0");
+                //---- chooseDataDumpTrucks ----
+                chooseDataDumpTrucks.setBackground(new Color(0x3c3f41));
+                chooseDataDumpTrucks.setTitle("Number of dumpers");
+                chooseDataDumpTrucks.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+                chooseDataDumpTrucks.setMinimumSize(new Dimension(50, 55));
+                chooseDataDumpTrucks.setBorder(new CompoundBorder(
+                    new TitledBorder(new EtchedBorder(EtchedBorder.RAISED), "Number of dumpers", TitledBorder.CENTER, TitledBorder.BELOW_TOP,
+                        new Font(Font.DIALOG, Font.PLAIN, 14)),
+                    new BevelBorder(BevelBorder.LOWERED)));
+                leftSettingModelPanel.add(chooseDataDumpTrucks, "cell 0 4,aligny center,growy 0");
 
-                //---- chooseDataMaxQueueSize ----
-                chooseDataMaxQueueSize.setTitle("Критичний розмір черги до каси");
-                chooseDataMaxQueueSize.setBorder(new CompoundBorder(
-                        new TitledBorder(new EtchedBorder(EtchedBorder.RAISED),
-                                "Критичний розмір черги до каси", TitledBorder.CENTER, TitledBorder.BELOW_TOP,
-                                new Font("Dialog", Font.PLAIN, 14)),
-                        new BevelBorder(BevelBorder.LOWERED)));
-                chooseDataMaxQueueSize.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-                chooseDataMaxQueueSize.setMinimumSize(new Dimension(50, 55));
-                leftSettingModelPanel.add(chooseDataMaxQueueSize, "cell 0 5,aligny center,growy 0");
+                //---- chooseDataTransportTime ----
+                chooseDataTransportTime.setBackground(new Color(0x3c3f41));
+                chooseDataTransportTime.setTitle("Ore transport time by dumper truck");
+                chooseDataTransportTime.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+                chooseDataTransportTime.setMinimumSize(new Dimension(50, 55));
+                chooseDataTransportTime.setBorder(new CompoundBorder(
+                    new TitledBorder(new EtchedBorder(EtchedBorder.RAISED), "Ore transport time by dumper truck", TitledBorder.CENTER, TitledBorder.BELOW_TOP,
+                        new Font(Font.DIALOG, Font.PLAIN, 14)),
+                    new BevelBorder(BevelBorder.LOWERED)));
+                leftSettingModelPanel.add(chooseDataTransportTime, "cell 0 5,aligny center,growy 0");
 
-                //---- chooseRandomPurchasesPerCustomer ----
-                chooseRandomPurchasesPerCustomer.setBorder(new CompoundBorder(
-                        new EtchedBorder(),
-                        new TitledBorder(LineBorder.createBlackLineBorder(),
-                                "Кількість покупок (Ерланг)", TitledBorder.CENTER, TitledBorder.TOP,
-                                new Font("Segoe UI", Font.PLAIN, 14), Color.DARK_GRAY)));
-                chooseRandomPurchasesPerCustomer.setRandom(new Erlang(5, 2, true));
-                leftSettingModelPanel.add(chooseRandomPurchasesPerCustomer, "cell 0 6,aligny center,growy 0");
+                //---- chooseDataUnloadTimeBunker ----
+                chooseDataUnloadTimeBunker.setBackground(new Color(0x3c3f41));
+                chooseDataUnloadTimeBunker.setTitle("Ore unloading time in the hopper");
+                chooseDataUnloadTimeBunker.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+                chooseDataUnloadTimeBunker.setMinimumSize(new Dimension(50, 55));
+                chooseDataUnloadTimeBunker.setBorder(new CompoundBorder(
+                    new TitledBorder(new EtchedBorder(EtchedBorder.RAISED), "Ore unloading time in the hopper", TitledBorder.CENTER, TitledBorder.BELOW_TOP,
+                        new Font(Font.DIALOG, Font.PLAIN, 14)),
+                    new BevelBorder(BevelBorder.LOWERED)));
+                leftSettingModelPanel.add(chooseDataUnloadTimeBunker, "cell 0 6,aligny center,growy 0");
+
+                //---- chooseDataUnloadTimeSite ----
+                chooseDataUnloadTimeSite.setBackground(new Color(0x3c3f41));
+                chooseDataUnloadTimeSite.setTitle("Ore unloading time at the site");
+                chooseDataUnloadTimeSite.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+                chooseDataUnloadTimeSite.setMinimumSize(new Dimension(50, 55));
+                chooseDataUnloadTimeSite.setBorder(new CompoundBorder(
+                    new TitledBorder(new EtchedBorder(EtchedBorder.RAISED), "Ore unloading time at the site", TitledBorder.CENTER, TitledBorder.BELOW_TOP,
+                        new Font(Font.DIALOG, Font.PLAIN, 14)),
+                    new BevelBorder(BevelBorder.LOWERED)));
+                leftSettingModelPanel.add(chooseDataUnloadTimeSite, "cell 0 7,aligny center,growy 0");
             }
             splitPane.setLeftComponent(leftSettingModelPanel);
 
             //======== tabbedPane ========
             {
+
                 //======== taskScrollPanel ========
                 {
+
+                    //---- textHtmTask ----
                     textHtmTask.setEditable(false);
                     textHtmTask.setFont(new Font("Segoe UI", Font.PLAIN, 12));
                     taskScrollPanel.setViewportView(textHtmTask);
                 }
-                tabbedPane.addTab("Завдання", taskScrollPanel);
+                tabbedPane.addTab("Task", taskScrollPanel);
 
                 //======== testPanel ========
                 {
                     testPanel.setLayout(new MigLayout(
-                            "hidemode 3",
-                            "[fill][fill]",
-                            "[][][]"));
+                        "hidemode 3",
+                        // columns
+                        "[fill]" +
+                        "[fill]",
+                        // rows
+                        "[]" +
+                        "[]" +
+                        "[]"));
                 }
-                tabbedPane.addTab("Тест", testPanel);
+                tabbedPane.addTab("Test", testPanel);
 
                 //======== statPanel ========
                 {
                     statPanel.setLayout(new MigLayout(
-                            "hidemode 3",
-                            "[fill][fill]",
-                            "[][][]"));
+                        "hidemode 3",
+                        // columns
+                        "[fill]" +
+                        "[fill]",
+                        // rows
+                        "[]" +
+                        "[]" +
+                        "[]"));
                 }
-                tabbedPane.addTab("Статистика", statPanel);
+                tabbedPane.addTab("Stat", statPanel);
 
                 //======== regresPanel ========
                 {
                     regresPanel.setLayout(new MigLayout(
-                            "hidemode 3",
-                            "[fill][fill]",
-                            "[][][]"));
+                        "hidemode 3",
+                        // columns
+                        "[fill]" +
+                        "[fill]",
+                        // rows
+                        "[]" +
+                        "[]" +
+                        "[]"));
                 }
-                tabbedPane.addTab("Регресія", regresPanel);
+                tabbedPane.addTab("Regres", regresPanel);
 
                 //======== transientPanel ========
                 {
                     transientPanel.setLayout(new MigLayout(
-                            "hidemode 3",
-                            "[fill][fill]",
-                            "[][][]"));
+                        "hidemode 3",
+                        // columns
+                        "[fill]" +
+                        "[fill]",
+                        // rows
+                        "[]" +
+                        "[]" +
+                        "[]"));
                 }
-                tabbedPane.addTab("Перехідний процес", transientPanel);
+                tabbedPane.addTab("Transient", transientPanel);
 
                 //======== infoPanel ========
                 {
                     infoPanel.setMinimumSize(new Dimension(887, 135));
                     infoPanel.setLayout(new MigLayout(
-                            "hidemode 3",
-                            "[649,grow,fill]",
-                            "[319,grow][108]"));
+                        "hidemode 3",
+                        // columns
+                        "[649,fill]",
+                        // rows
+                        "[319]" +
+                        "[108]"));
 
                     //======== photoPanel ========
                     {
-                        photoPanel = createPhotoPanel();
-                        photoPanel.setPreferredSize(new Dimension(1500, 1500));
-                        photoPanel.setMinimumSize(new Dimension(1500, 1500));
+                        photoPanel.setPreferredSize(new Dimension(500, 500));
                         photoPanel.setLayout(null);
 
                         {
+                            // compute preferred size
                             Dimension preferredSize = new Dimension();
-                            for (int i = 0; i < photoPanel.getComponentCount(); i++) {
+                            for(int i = 0; i < photoPanel.getComponentCount(); i++) {
                                 Rectangle bounds = photoPanel.getComponent(i).getBounds();
                                 preferredSize.width = Math.max(bounds.x + bounds.width, preferredSize.width);
                                 preferredSize.height = Math.max(bounds.y + bounds.height, preferredSize.height);
@@ -238,22 +283,18 @@ public class Main extends JFrame {
                     }
                     infoPanel.add(photoPanel, "cell 0 0");
 
-                    photoPanel.setPreferredSize(new Dimension(1500, 1500));
-
                     //---- textInfoAuthor ----
-                    textInfoAuthor.setText(
-                            "Автор проекту:\nСергієнко Юрій Сергійович,\nстудент 3 курсу, спеціальність Комп'ютерна інженерія\n" +
-                                    "Варіант 19 – Моделювання роботи супермаркету");
+                    textInfoAuthor.setText("Author of the project:\nLysenok Denys Vitaliiovych,\n3rd year student majoring in Computer Engineering\nEmail: cerobreath@gmail.com\nGitHub: cerobreath");
                     textInfoAuthor.setFont(new Font("Segoe UI", Font.PLAIN, 16));
                     textInfoAuthor.setEditable(false);
                     infoPanel.add(textInfoAuthor, "cell 0 1");
                 }
-                tabbedPane.addTab("Інфо", infoPanel);
+                tabbedPane.addTab("Info", infoPanel);
             }
             splitPane.setRightComponent(tabbedPane);
         }
         contentPane.add(splitPane, BorderLayout.CENTER);
-        setSize(900, 580);
+        setSize(1406, 859);
         setLocationRelativeTo(getOwner());
         // JFormDesigner - End of component initialization  //GEN-END:initComponents  @formatter:on
     }
@@ -307,12 +348,13 @@ public class Main extends JFrame {
     private JSplitPane splitPane;
     private JPanel leftSettingModelPanel;
     private JLabel Title;
-    private ChooseRandom chooseRandomCustomerArrival;
-    private ChooseRandom chooseRandomShoppingTime;
-    private ChooseRandom chooseRandomCashierService;
-    private ChooseData chooseDataCashiers;
-    private ChooseData chooseDataMaxQueueSize;
-    private ChooseRandom chooseRandomPurchasesPerCustomer;
+    private ChooseRandom chooseRandomExcavator;
+    private ChooseRandom chooseRandomCrusher;
+    private ChooseRandom chooseRandomLoader;
+    private ChooseData chooseDataDumpTrucks;
+    private ChooseData chooseDataTransportTime;
+    private ChooseData chooseDataUnloadTimeBunker;
+    private ChooseData chooseDataUnloadTimeSite;
     private JTabbedPane tabbedPane;
     private JScrollPane taskScrollPanel;
     private JTextPane textHtmTask;

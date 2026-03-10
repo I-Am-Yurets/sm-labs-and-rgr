@@ -2,25 +2,22 @@
  * Created by JFormDesigner on Wed Feb 26 07:39:29 EET 2025
  */
 
-package stu.cn.ua.rgr4;
+package stu.cn.ua.rgr2;
 
 import java.awt.event.*;
+import javax.swing.event.*;
 import com.formdev.flatlaf.FlatLightLaf;
 import net.miginfocom.swing.MigLayout;
-import process.Dispatcher;
-import process.IModelFactory;
 import rnd.Negexp;
 import rnd.Norm;
 import rnd.Erlang;
+import widgets.*;
 import widgets.ChooseData;
 import widgets.ChooseRandom;
-import widgets.Diagram;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.*;
-import javax.swing.event.CaretEvent;
-import javax.swing.event.ChangeEvent;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -29,7 +26,13 @@ import java.net.URL;
 /**
  * Варіант 19 – Моделювання роботи супермаркету (SuperMarket)
  *
- * РГР-3: повна реалізація моделі + запуск симуляції.
+ * РГР-2: додані діаграми та кнопка запуску тесту (без реалізації моделі).
+ *
+ * Діаграми:
+ *   diagramQueueToCashier       – черга покупців до кас
+ *   diagramCustomersInStore     – кількість покупців у торговельному залі
+ *   diagramLostCustomers        – кількість втрачених покупців (не зайшли до магазину)
+ *   diagramCashierLoad          – завантаженість касирів
  *
  * @author Student, КІ-23x
  */
@@ -56,25 +59,23 @@ public class Main extends JFrame {
 
     // ── Getters for Model ──────────────────────────────────────────────────────
 
-    public JButton getDiagramStartbutton()                { return diagramStartbutton; }
+    public ChooseRandom getChooseRandomCustomerArrival() { return chooseRandomCustomerArrival; }
+    public ChooseRandom getChooseRandomShoppingTime()    { return chooseRandomShoppingTime; }
+    public ChooseRandom getChooseRandomCashierService()  { return chooseRandomCashierService; }
 
-    public ChooseRandom getChooseRandomCustomerArrival()  { return chooseRandomCustomerArrival; }
-    public ChooseRandom getChooseRandomShoppingTime()     { return chooseRandomShoppingTime; }
-    public ChooseRandom getChooseRandomCashierService()   { return chooseRandomCashierService; }
-
-    public ChooseData getChooseDataCashiers()              { return chooseDataCashiers; }
-    public ChooseData getChooseDataMaxQueueSize()          { return chooseDataMaxQueueSize; }
+    public ChooseData getChooseDataCashiers()             { return chooseDataCashiers; }
+    public ChooseData getChooseDataMaxQueueSize()         { return chooseDataMaxQueueSize; }
     public ChooseRandom getChooseRandomPurchasesPerCustomer() { return chooseRandomPurchasesPerCustomer; }
-    public ChooseData getChooseDataSimulationTime()        { return chooseDataSimulationTime; }
+    public ChooseData getChooseDataSimulationTime()       { return chooseDataSimulationTime; }
 
     public Diagram getDiagramQueueToCashier()    { return diagramQueueToCashier; }
     public Diagram getDiagramCustomersInStore()  { return diagramCustomersInStore; }
     public Diagram getDiagramLostCustomers()     { return diagramLostCustomers; }
     public Diagram getDiagramCashierLoad()       { return diagramCashierLoad; }
 
-    public JCheckBox getConsoleLoggerCheckBox()  { return consoleLoggerCheckBox; }
+    public JCheckBox getConsoleLoggerCheckBox() { return consoleLoggerCheckBox; }
 
-    // ── Caret / tab listeners ──────────────────────────────────────────────────
+    // ── Caret listeners ───────────────────────────────────────────────────────
 
     private void chooseDataSimulationTimeCaretUpdate(CaretEvent e) {
         if (testPanel.isShowing()) {
@@ -127,25 +128,6 @@ public class Main extends JFrame {
         }
     }
 
-    // ── Запуск симуляції ──────────────────────────────────────────────────────
-
-    private void startTest(ActionEvent e) {
-        getDiagramQueueToCashier().clear();
-        getDiagramCustomersInStore().clear();
-        getDiagramLostCustomers().clear();
-        getDiagramCashierLoad().clear();
-
-        Dispatcher dispatcher = new Dispatcher();
-        IModelFactory factory = (d) -> new Model(d, this);
-        Model model = (Model) factory.createModel(dispatcher);
-
-        getDiagramStartbutton().setEnabled(false);
-        dispatcher.addDispatcherFinishListener(() -> SwingUtilities.invokeLater(() -> getDiagramStartbutton().setEnabled(true)));
-
-        model.initForTest();
-        dispatcher.start();
-    }
-
     // ── Component initialization ──────────────────────────────────────────────
 
     private void initComponents() {
@@ -179,7 +161,7 @@ public class Main extends JFrame {
         textInfoAuthor = new JTextArea();
 
         //======== this ========
-        setTitle("РГР. Варіант 19 – Моделювання роботи супермаркету");
+        setTitle("РГР. Варіант 19 – Супермаркет");
         var contentPane = getContentPane();
         contentPane.setLayout(new BorderLayout());
 
@@ -305,7 +287,7 @@ public class Main extends JFrame {
                     testPanel.add(diagramQueueToCashier, "cell 0 0,grow");
 
                     //---- diagramCustomersInStore ----
-                    diagramCustomersInStore.setTitleText("Покупці у торговельному залі");
+                    diagramCustomersInStore.setTitleText("Кількість покупців у торговельному залі");
                     diagramCustomersInStore.setPanelBackground(Color.WHITE);
                     diagramCustomersInStore.setGridColor(new Color(0xCCCCCC));
                     diagramCustomersInStore.setPainterColor(new Color(0x33cc33));
@@ -341,7 +323,6 @@ public class Main extends JFrame {
                         //---- diagramStartbutton ----
                         diagramStartbutton.setText("Старт");
                         diagramStartbutton.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-                        diagramStartbutton.addActionListener(e -> startTest(e));
                         diagramInteractionPanel.add(diagramStartbutton, BorderLayout.EAST);
                     }
                     testPanel.add(diagramInteractionPanel, "cell 0 4");
