@@ -83,11 +83,10 @@ public class Model {
             customer.setQueueToCashier(getQueueToCashier());
             customer.setCustomersInStore(getCustomersInStore());
             customer.setLostCustomers(getLostCustomers());
-            customer.setMaxQueueSize(gui.getChooseDataMaxQueueSize().getDouble());
-            customer.setMaxCustomersInStore(Double.MAX_VALUE);
+            customer.setMaxQueueSize(Integer.MAX_VALUE);
+            customer.setMaxCustomersInStore(Integer.MAX_VALUE);
             customer.setArrivalRnd(gui.getChooseRandomCustomerArrival().getRandom());
             customer.setShoppingRnd(gui.getChooseRandomShoppingTime().getRandom());
-            customer.setPurchasesRnd(gui.getChooseRandomPurchasesPerCustomer().getRandom());
             customer.setFinishTime(gui.getChooseDataSimulationTime().getDouble());
         }
         return customer;

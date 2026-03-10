@@ -69,8 +69,8 @@ public class Model implements IStatisticsable {
             customer.setQueueToCashier(getQueueToCashier());
             customer.setCustomersInStore(getCustomersInStore());
             customer.setLostCustomers(getLostCustomers());
-            customer.setMaxQueueSize(gui.getChooseDataMaxQueueSize().getDouble());
-            customer.setMaxCustomersInStore(Double.MAX_VALUE);
+            customer.setMaxQueueSize(Integer.MAX_VALUE);
+            customer.setMaxCustomersInStore(Integer.MAX_VALUE);
             customer.setArrivalRnd(gui.getChooseRandomCustomerArrival().getRandom());
             customer.setShoppingRnd(gui.getChooseRandomShoppingTime().getRandom());
             customer.setFinishTime(gui.getChooseDataSimulationTime().getDouble());

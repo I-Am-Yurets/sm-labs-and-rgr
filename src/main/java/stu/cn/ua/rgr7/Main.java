@@ -4,19 +4,18 @@
 
 package stu.cn.ua.rgr7;
 
-import com.formdev.flatlaf.FlatLightLaf;
 import net.miginfocom.swing.MigLayout;
 import process.Dispatcher;
 import process.IModelFactory;
+import rnd.Erlang;
 import rnd.Negexp;
 import rnd.Norm;
-import rnd.Erlang;
-import rnd.RandomGenerators;
 import widgets.ChooseData;
 import widgets.ChooseRandom;
 import widgets.Diagram;
 
 import javax.imageio.ImageIO;
+import com.formdev.flatlaf.FlatIntelliJLaf;
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.event.CaretEvent;
@@ -45,7 +44,7 @@ public class Main extends JFrame {
     }
 
     public static void main(String[] args) {
-        try { UIManager.setLookAndFeel(new FlatLightLaf()); } catch (Exception e) { e.printStackTrace(); }
+        FlatIntelliJLaf.setup();
         SwingUtilities.invokeLater(() -> {
             Main frame = new Main();
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -60,7 +59,6 @@ public class Main extends JFrame {
     public ChooseRandom getChooseRandomShoppingTime()      { return chooseRandomShoppingTime; }
     public ChooseRandom getChooseRandomCashierService()    { return chooseRandomCashierService; }
     public ChooseData   getChooseDataCashiers()            { return chooseDataCashiers; }
-    public ChooseData   getChooseDataMaxQueueSize()        { return chooseDataMaxQueueSize; }
     public ChooseRandom getChooseRandomPurchasesPerCustomer() { return chooseRandomPurchasesPerCustomer; }
     public ChooseData   getChooseDataSimulationTime()      { return chooseDataSimulationTime; }
     public Diagram      getDiagramQueueToCashier()         { return diagramQueueToCashier; }
@@ -70,6 +68,16 @@ public class Main extends JFrame {
     public JCheckBox    getConsoleLoggerCheckBox()         { return consoleLoggerCheckBox; }
 
     // ─── Diagram caret updates ────────────────────────────────────────────────
+
+    private void chooseDataCashiersCaretUpdate(CaretEvent e) {
+        if (testPanel.isShowing()) {
+            try {
+                diagramCashierLoad.setVerticalMaxText(chooseDataCashiers.getText());
+            } catch (Exception ex) {
+                System.err.println("Error: " + ex.getMessage());
+            }
+        }
+    }
 
     private void chooseDataSimulationTimeCaretUpdate(CaretEvent e) {
         if (testPanel.isShowing()) {
@@ -92,7 +100,6 @@ public class Main extends JFrame {
                 diagramCustomersInStore.setHorizontalMaxText(t);
                 diagramLostCustomers.setHorizontalMaxText(t);
                 diagramCashierLoad.setHorizontalMaxText(t);
-                diagramQueueToCashier.setVerticalMaxText(chooseDataMaxQueueSize.getText());
                 diagramCashierLoad.setVerticalMaxText(chooseDataCashiers.getText());
                 System.out.println("Switched to Test tab: sim time = 500");
             } else if (tabbedPane.getSelectedComponent() == statPanel
@@ -131,7 +138,6 @@ public class Main extends JFrame {
         chooseRandomShoppingTime     = new ChooseRandom();
         chooseRandomCashierService   = new ChooseRandom();
         chooseDataCashiers           = new ChooseData();
-        chooseDataMaxQueueSize       = new ChooseData();
         chooseRandomPurchasesPerCustomer = new ChooseRandom();
         chooseDataSimulationTime     = new ChooseData();
         tabbedPane               = new JTabbedPane();
@@ -178,49 +184,64 @@ public class Main extends JFrame {
 
         // ── Left panel ────────────────────────────────────────────────────────
         leftSettingModelPanel.setLayout(new MigLayout("hidemode 3,aligny center", "[262,fill]",
-                "[][][][][][][][][]"));
+                "[][][][][][][]"));
         Title.setText("Параметри системи, що досліджується");
         Title.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         leftSettingModelPanel.add(Title, "cell 0 0,alignx center,growx 0");
 
         chooseRandomCustomerArrival.setBorder(new CompoundBorder(new EtchedBorder(),
                 new TitledBorder(LineBorder.createBlackLineBorder(), "Інтервал приходу покупців",
-                        TitledBorder.CENTER, TitledBorder.TOP, new Font("Segoe UI", Font.PLAIN, 14), Color.DARK_GRAY)));
+                        TitledBorder.CENTER, TitledBorder.TOP, new Font("Segoe UI", Font.PLAIN, 14), Color.lightGray)));
         chooseRandomCustomerArrival.setRandom(new Negexp(10));
         leftSettingModelPanel.add(chooseRandomCustomerArrival, "cell 0 1,aligny center,growy 0");
 
         chooseRandomShoppingTime.setBorder(new CompoundBorder(new EtchedBorder(),
                 new TitledBorder(LineBorder.createBlackLineBorder(), "Час перебування покупця в залі",
-                        TitledBorder.CENTER, TitledBorder.TOP, new Font("Segoe UI", Font.PLAIN, 14), Color.DARK_GRAY)));
+                        TitledBorder.CENTER, TitledBorder.TOP, new Font("Segoe UI", Font.PLAIN, 14), Color.lightGray)));
         chooseRandomShoppingTime.setRandom(new Norm(30, 8));
         leftSettingModelPanel.add(chooseRandomShoppingTime, "cell 0 2,aligny center,growy 0");
 
         chooseRandomCashierService.setBorder(new CompoundBorder(new EtchedBorder(),
                 new TitledBorder(LineBorder.createBlackLineBorder(), "Час обслуговування касиром",
-                        TitledBorder.CENTER, TitledBorder.TOP, new Font("Segoe UI", Font.PLAIN, 14), Color.DARK_GRAY)));
+                        TitledBorder.CENTER, TitledBorder.TOP, new Font("Segoe UI", Font.PLAIN, 14), Color.lightGray)));
         chooseRandomCashierService.setRandom(new Norm(5, 2));
         leftSettingModelPanel.add(chooseRandomCashierService, "cell 0 3,aligny center,growy 0");
 
-        setupChooseData(chooseDataCashiers, "Кількість кас (касирів)", 3);
-        leftSettingModelPanel.add(chooseDataCashiers, "cell 0 4,aligny center,growy 0");
+        //---- chooseRandomPurchasesPerCustomer ----
+        chooseRandomPurchasesPerCustomer.setRandom(new Erlang(3, 5, true));
+        chooseRandomPurchasesPerCustomer.setTitle("Кількість покупок (Ерланг)");
+        chooseRandomPurchasesPerCustomer.setBorder(new CompoundBorder(
+                new EtchedBorder(),
+                new TitledBorder(LineBorder.createBlackLineBorder(),
+                        "Кількість покупок (Ерланг)", TitledBorder.CENTER, TitledBorder.TOP,
+                        new Font("Segoe UI", Font.PLAIN, 14), Color.lightGray)));
+        leftSettingModelPanel.add(chooseRandomPurchasesPerCustomer, "cell 0 4,aligny center,growy 0");
 
-        setupChooseData(chooseDataMaxQueueSize, "Критичний розмір черги", 5);
-        leftSettingModelPanel.add(chooseDataMaxQueueSize, "cell 0 5,aligny center,growy 0");
+        //---- chooseDataCashiers ----
+        chooseDataCashiers.setTitle("Кількість кас (касирів)");
+        chooseDataCashiers.setBorder(new CompoundBorder(
+                new TitledBorder(new EtchedBorder(EtchedBorder.RAISED),
+                        "Кількість кас (касирів)", TitledBorder.CENTER, TitledBorder.BELOW_TOP,
+                        new Font("Dialog", Font.PLAIN, 14)),
+                new BevelBorder(BevelBorder.LOWERED)));
+        chooseDataCashiers.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        chooseDataCashiers.setMinimumSize(new Dimension(50, 55));
+        chooseDataCashiers.addCaretListener(e -> chooseDataCashiersCaretUpdate(e));
+        chooseDataCashiers.setInt(3);
+        leftSettingModelPanel.add(chooseDataCashiers, "cell 0 5,aligny center,growy 0");
 
-        setupChooseRandom(chooseRandomPurchasesPerCustomer, "Кількість покупок (Ерланг)", new Erlang(5, 2, true));
-        leftSettingModelPanel.add(chooseRandomPurchasesPerCustomer, "cell 0 6,aligny center,growy 0");
-
-
+        //---- chooseDataSimulationTime ----
         chooseDataSimulationTime.setTitle("Час моделювання");
         chooseDataSimulationTime.setBorder(new CompoundBorder(
-                new TitledBorder(new EtchedBorder(EtchedBorder.RAISED), "Час моделювання",
-                        TitledBorder.CENTER, TitledBorder.BELOW_TOP, new Font("Dialog", Font.PLAIN, 14)),
+                new TitledBorder(new EtchedBorder(EtchedBorder.RAISED),
+                        "Час моделювання", TitledBorder.CENTER, TitledBorder.BELOW_TOP,
+                        new Font("Dialog", Font.PLAIN, 14)),
                 new BevelBorder(BevelBorder.LOWERED)));
         chooseDataSimulationTime.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         chooseDataSimulationTime.setMinimumSize(new Dimension(50, 55));
         chooseDataSimulationTime.addCaretListener(e -> chooseDataSimulationTimeCaretUpdate(e));
         chooseDataSimulationTime.setInt(500);
-        leftSettingModelPanel.add(chooseDataSimulationTime, "cell 0 7,aligny center,growy 0");
+        leftSettingModelPanel.add(chooseDataSimulationTime, "cell 0 6,aligny center,growy 0");
 
         splitPane.setLeftComponent(leftSettingModelPanel);
 
@@ -288,16 +309,7 @@ public class Main extends JFrame {
 
     // ─── Helpers ──────────────────────────────────────────────────────────────
 
-    private void setupChooseRandom(ChooseRandom cr, String title, rnd.Randomable rnd) {
-        cr.setBorder(new CompoundBorder(
-                new EtchedBorder(),
-                new TitledBorder(LineBorder.createBlackLineBorder(), title,
-                        TitledBorder.CENTER, TitledBorder.TOP, new Font("Segoe UI", Font.PLAIN, 14), Color.DARK_GRAY)));
-        cr.setRandom((RandomGenerators) rnd);
-    }
-
     private void setupChooseData(ChooseData cd, String title, int defaultVal) {
-
         cd.setTitle(title);
         cd.setBorder(new CompoundBorder(
                 new TitledBorder(new EtchedBorder(EtchedBorder.RAISED), title,
@@ -310,8 +322,8 @@ public class Main extends JFrame {
 
     private void setupDiagram(Diagram d, String title, Color painterColor) {
         d.setTitleText(title);
-        d.setPanelBackground(Color.WHITE);
-        d.setGridColor(new Color(0xCCCCCC));
+        d.setPanelBackground(new Color(0xf0f0f0));
+        d.setGridColor(new Color(0xcccccc));
         d.setPainterColor(painterColor);
         d.setGridByX(10);
     }
@@ -367,7 +379,6 @@ public class Main extends JFrame {
     private ChooseRandom chooseRandomShoppingTime;
     private ChooseRandom chooseRandomCashierService;
     private ChooseData chooseDataCashiers;
-    private ChooseData chooseDataMaxQueueSize;
     private ChooseRandom chooseRandomPurchasesPerCustomer;
     private ChooseData chooseDataSimulationTime;
     private JTabbedPane tabbedPane;

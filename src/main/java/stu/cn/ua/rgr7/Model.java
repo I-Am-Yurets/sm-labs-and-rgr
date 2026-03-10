@@ -27,7 +27,6 @@ public class Model implements IStatisticsable, IExperimentable, ITransProcesable
     private final Main gui;
 
     // ── Параметри, зчитані з GUI у конструкторі ───────────────────────────────
-    private final double paramMaxQueueSize;
     private final rnd.Randomable paramArrivalRnd;
     private final rnd.Randomable paramShoppingRnd;
     private final rnd.Randomable paramServiceRnd;
@@ -60,7 +59,6 @@ public class Model implements IStatisticsable, IExperimentable, ITransProcesable
         gui = g;
 
         // Зчитуємо всі параметри GUI одразу — до старту Dispatcher
-        paramMaxQueueSize        = g.getChooseDataMaxQueueSize().getDouble();
         paramArrivalRnd          = g.getChooseRandomCustomerArrival().getRandom();
         paramShoppingRnd         = g.getChooseRandomShoppingTime().getRandom();
         paramServiceRnd          = g.getChooseRandomCashierService().getRandom();
@@ -92,8 +90,8 @@ public class Model implements IStatisticsable, IExperimentable, ITransProcesable
             customer.setQueueToCashier(getQueueToCashier());
             customer.setCustomersInStore(getCustomersInStore());
             customer.setLostCustomers(getLostCustomers());
-            customer.setMaxQueueSize(paramMaxQueueSize);
-            customer.setMaxCustomersInStore(Double.MAX_VALUE);
+            customer.setMaxQueueSize(Integer.MAX_VALUE);
+            customer.setMaxCustomersInStore(Integer.MAX_VALUE);
             customer.setArrivalRnd(paramArrivalRnd);
             customer.setShoppingRnd(paramShoppingRnd);
             customer.setFinishTime(paramFinishTime);
