@@ -65,6 +65,9 @@ public class Main extends JFrame {
         if (testPanel.isShowing()) {
             try {
                 diagramCashierLoad.setVerticalMaxText(chooseDataCashiers.getText());
+                diagramQueueToCashier.setVerticalMaxText(chooseDataCashiers.getText());
+                diagramCustomersInStore.setVerticalMaxText(
+                        String.valueOf(chooseDataCashiers.getInt() * 3 + 1));
             } catch (Exception ex) {
                 System.err.println("Error: " + ex.getMessage());
             }
@@ -93,6 +96,10 @@ public class Main extends JFrame {
                 diagramLostCustomers.setHorizontalMaxText(t);
                 diagramCashierLoad.setHorizontalMaxText(t);
                 diagramCashierLoad.setVerticalMaxText(chooseDataCashiers.getText());
+                diagramQueueToCashier.setVerticalMaxText(chooseDataCashiers.getText());
+                diagramCustomersInStore.setVerticalMaxText(
+                        String.valueOf(chooseDataCashiers.getInt() * 3 + 1));
+                diagramLostCustomers.setVerticalMaxText("5");
             } else if (tabbedPane.getSelectedComponent() == statPanel) {
                 chooseDataSimulationTime.setInt(10000);
             }
@@ -100,6 +107,22 @@ public class Main extends JFrame {
     }
 
     private void startTest(ActionEvent e) {
+        // Завжди оновлюємо межі осей перед запуском
+        try {
+            String simTime = chooseDataSimulationTime.getText();
+            diagramQueueToCashier.setHorizontalMaxText(simTime);
+            diagramCustomersInStore.setHorizontalMaxText(simTime);
+            diagramLostCustomers.setHorizontalMaxText(simTime);
+            diagramCashierLoad.setHorizontalMaxText(simTime);
+            diagramCashierLoad.setVerticalMaxText(chooseDataCashiers.getText());
+            diagramQueueToCashier.setVerticalMaxText(chooseDataCashiers.getText());
+            diagramCustomersInStore.setVerticalMaxText(
+                    String.valueOf(chooseDataCashiers.getInt() * 3 + 1));
+            diagramLostCustomers.setVerticalMaxText("5");
+        } catch (Exception ex) {
+            System.err.println("Error setting diagram axes: " + ex.getMessage());
+        }
+
         diagramQueueToCashier.clear();
         diagramCustomersInStore.clear();
         diagramLostCustomers.clear();

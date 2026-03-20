@@ -18,6 +18,7 @@ import stat.Histo;
  *  - queueToCashier  – черга покупців до кас
  *  - customersInStore – «сховище» для обліку покупців у залі
  *  - lostCustomers   – «сховище» для обліку втрачених покупців
+ *  - busyCashiers    – «сховище» для обліку зайнятих касирів (діаграма завантаженості)
  */
 public class Model {
 
@@ -34,6 +35,7 @@ public class Model {
     private QueueForTransactions<Customer> queueToCashier;
     private Store customersInStore;
     private Store lostCustomers;
+    private Store busyCashiers;
 
     // ── Статистика ────────────────────────────────────────────────────────────
     DiscretHisto histoQueueToCashier   = new DiscretHisto();
@@ -65,6 +67,7 @@ public class Model {
         getCustomersInStore().setPainter(gui.getDiagramCustomersInStore().getPainter());
         getQueueToCashier().setPainter(gui.getDiagramQueueToCashier().getPainter());
         getLostCustomers().setPainter(gui.getDiagramLostCustomers().getPainter());
+        getBusyCashiers().setPainter(gui.getDiagramCashierLoad().getPainter());
 
         if (gui.getConsoleLoggerCheckBox().isSelected()) {
             dispatcher.setProtocolFileName("Console");
@@ -87,6 +90,7 @@ public class Model {
             customer.setMaxCustomersInStore(Integer.MAX_VALUE);
             customer.setArrivalRnd(gui.getChooseRandomCustomerArrival().getRandom());
             customer.setShoppingRnd(gui.getChooseRandomShoppingTime().getRandom());
+            customer.setPurchasesRnd(gui.getChooseRandomPurchasesPerCustomer().getRandom());
             customer.setFinishTime(gui.getChooseDataSimulationTime().getDouble());
         }
         return customer;
@@ -110,6 +114,7 @@ public class Model {
             cashier.setNameForProtocol("Касир");
             cashier.setHistoForActorWaitingTime(histoCashierWait);
             cashier.setQueueToCashier(getQueueToCashier());
+            cashier.setBusyCashiers(getBusyCashiers());
             cashier.setServiceRnd(gui.getChooseRandomCashierService().getRandom());
             cashier.setFinishTime(gui.getChooseDataSimulationTime().getDouble());
         }
@@ -153,5 +158,14 @@ public class Model {
             lostCustomers.setHisto(histoLostCustomers);
         }
         return lostCustomers;
+    }
+
+    public Store getBusyCashiers() {
+        if (busyCashiers == null) {
+            busyCashiers = new Store();
+            busyCashiers.setNameForProtocol("Завантаженість касирів");
+            busyCashiers.setDispatcher(dispatcher);
+        }
+        return busyCashiers;
     }
 }

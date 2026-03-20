@@ -17,10 +17,10 @@ import java.util.function.BooleanSupplier;
  *     як «втрачений».
  *  3. Якщо торговельний зал заповнений (customersInStore >= maxCustomersInStore),
  *     також відмовляється і рахується як «втрачений».
- *  4. Інакше – заходить до залу (customersInStore.add(1)), ходить по магазину (shoppingTime),
- *     потім стає у чергу до каси (queueToCashier.addLast(this)) і чекає обслуговування
- *     (waitForCondition – прапор isServed, який касир виставляє після розрахунку).
- *  5. Після обслуговування покидає зал (customersInStore.remove(1)) та починає цикл знову.
+ *  4. Інакше – заходить до залу (customersInStore.add(1)), ходить по магазину (shoppingRnd),
+ *     генерує кількість покупок (purchasesRnd, розподіл Ерланга з округленням до цілих),
+ *     потім стає у чергу до каси і чекає обслуговування.
+ *  5. Після обслуговування покидає зал та починає цикл знову.
  */
 public class Customer extends Actor {
 
@@ -38,6 +38,9 @@ public class Customer extends Actor {
     /** Генератор кількості покупок (Ерланг, з округленням до цілих). */
     private Randomable purchasesRnd;
 
+    /** Кількість покупок поточного візиту (для протоколу). */
+    private int purchases;
+
     /** Прапор, який касир встановлює в true після розрахунку. */
     private volatile boolean isServed = false;
 
@@ -49,12 +52,11 @@ public class Customer extends Actor {
             // Інтервал між приходами покупців
             holdForTime(arrivalRnd.next());
 
-            // Перевірка: чи вільна черга до кас і є місце у залі
-            boolean queueOverflow  = queueToCashier.size() >= maxQueueSize;
-            boolean storeOverflow  = customersInStore.getSize() >= maxCustomersInStore;
+            // Перевірка черги та залу
+            boolean queueOverflow = queueToCashier.size() >= maxQueueSize;
+            boolean storeOverflow = customersInStore.getSize() >= maxCustomersInStore;
 
             if (queueOverflow || storeOverflow) {
-                // Покупець не заходить
                 lostCustomers.add(1);
                 getDispatcher().printToProtocol(
                         getNameForProtocol() + " не зайшов до магазину (черга=" +
@@ -68,12 +70,13 @@ public class Customer extends Actor {
                     getNameForProtocol() + " зайшов до залу (зараз у залі: " +
                             customersInStore.getSize() + ")");
 
-            // Ходить по магазину (кількість покупок визначається генератором Ерланга)
-            int numPurchases = (purchasesRnd != null) ? (int) Math.round(purchasesRnd.next()) : 1;
-            if (numPurchases < 1) numPurchases = 1;
-            holdForTime(shoppingRnd.next() * numPurchases);
+            // Час перебування у залі (незалежно від кількості покупок)
+            holdForTime(shoppingRnd.next());
+
+            // Кількість покупок за розподілом Ерланга (вже заокруглено через round=true)
+            purchases = Math.max(1, (int) purchasesRnd.next());
             getDispatcher().printToProtocol(
-                    getNameForProtocol() + " зібрав " + numPurchases + " покупок, стає у чергу до каси");
+                    getNameForProtocol() + " зібрав " + purchases + " покупок, стає у чергу до каси");
 
             // Стає в чергу
             isServed = false;
@@ -93,6 +96,11 @@ public class Customer extends Actor {
     /** Викликається касиром після завершення обслуговування. */
     public void markServed() {
         isServed = true;
+    }
+
+    /** Повертає кількість покупок поточного відвідувача. */
+    public int getPurchases() {
+        return purchases;
     }
 
     // ── Setters ───────────────────────────────────────────────────────────────

@@ -89,6 +89,9 @@ public class Main extends JFrame {
         if (testPanel.isShowing()) {
             try {
                 diagramCashierLoad.setVerticalMaxText(chooseDataCashiers.getText());
+                diagramQueueToCashier.setVerticalMaxText(chooseDataCashiers.getText());
+                diagramCustomersInStore.setVerticalMaxText(
+                        String.valueOf(chooseDataCashiers.getInt() * 3 + 1));
             } catch (Exception ex) {
                 System.err.println("Error: " + ex.getMessage());
             }
@@ -104,6 +107,10 @@ public class Main extends JFrame {
                 diagramLostCustomers.setHorizontalMaxText(simTime);
                 diagramCashierLoad.setHorizontalMaxText(simTime);
                 diagramCashierLoad.setVerticalMaxText(chooseDataCashiers.getText());
+                diagramQueueToCashier.setVerticalMaxText(chooseDataCashiers.getText());
+                diagramCustomersInStore.setVerticalMaxText(
+                        String.valueOf(chooseDataCashiers.getInt() * 3 + 1));
+                diagramLostCustomers.setVerticalMaxText("5");
             } catch (Exception ex) {
                 System.err.println("Error initializing diagram settings: " + ex.getMessage());
             }
@@ -113,6 +120,22 @@ public class Main extends JFrame {
     // ── Запуск симуляції ──────────────────────────────────────────────────────
 
     private void startTest(ActionEvent e) {
+        // Завжди оновлюємо межі осей перед запуском
+        try {
+            String simTime = chooseDataSimulationTime.getText();
+            diagramQueueToCashier.setHorizontalMaxText(simTime);
+            diagramCustomersInStore.setHorizontalMaxText(simTime);
+            diagramLostCustomers.setHorizontalMaxText(simTime);
+            diagramCashierLoad.setHorizontalMaxText(simTime);
+            diagramCashierLoad.setVerticalMaxText(chooseDataCashiers.getText());
+            diagramQueueToCashier.setVerticalMaxText(chooseDataCashiers.getText());
+            diagramCustomersInStore.setVerticalMaxText(
+                    String.valueOf(chooseDataCashiers.getInt() * 3 + 1));
+            diagramLostCustomers.setVerticalMaxText("5");
+        } catch (Exception ex) {
+            System.err.println("Error setting diagram axes: " + ex.getMessage());
+        }
+
         getDiagramQueueToCashier().clear();
         getDiagramCustomersInStore().clear();
         getDiagramLostCustomers().clear();

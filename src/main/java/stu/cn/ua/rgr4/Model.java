@@ -23,6 +23,7 @@ public class Model {
     private QueueForTransactions<Customer> queueToCashier;
     private Store customersInStore;
     private Store lostCustomers;
+    private Store busyCashiers;
 
     DiscretHisto histoQueueToCashier   = new DiscretHisto();
     Histo        histoCustomersInStore = new Histo();
@@ -49,6 +50,7 @@ public class Model {
         getCustomersInStore().setPainter(gui.getDiagramCustomersInStore().getPainter());
         getQueueToCashier().setPainter(gui.getDiagramQueueToCashier().getPainter());
         getLostCustomers().setPainter(gui.getDiagramLostCustomers().getPainter());
+        getBusyCashiers().setPainter(gui.getDiagramCashierLoad().getPainter());
         dispatcher.setProtocolFileName(
                 gui.getConsoleLoggerCheckBox().isSelected() ? "Console" : "");
     }
@@ -86,6 +88,7 @@ public class Model {
             cashier.setNameForProtocol("Касир");
             cashier.setHistoForActorWaitingTime(histoCashierWait);
             cashier.setQueueToCashier(getQueueToCashier());
+            cashier.setBusyCashiers(getBusyCashiers());
             cashier.setServiceRnd(gui.getChooseRandomCashierService().getRandom());
             cashier.setFinishTime(gui.getChooseDataSimulationTime().getDouble());
         }
@@ -128,5 +131,14 @@ public class Model {
             lostCustomers.setHisto(histoLostCustomers);
         }
         return lostCustomers;
+    }
+
+    public Store getBusyCashiers() {
+        if (busyCashiers == null) {
+            busyCashiers = new Store();
+            busyCashiers.setNameForProtocol("Завантаженість касирів");
+            busyCashiers.setDispatcher(dispatcher);
+        }
+        return busyCashiers;
     }
 }
