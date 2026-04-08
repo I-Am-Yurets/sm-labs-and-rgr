@@ -88,7 +88,11 @@ public class Main extends JFrame {
 
     private void tabbedPaneStateChanged(ChangeEvent e) {
         try {
-            if (tabbedPane.getSelectedComponent() == testPanel) {
+            Component selected = tabbedPane.getSelectedComponent();
+            boolean isTestTab = (selected instanceof JScrollPane)
+                    && (((JScrollPane) selected).getViewport().getView() == testPanel);
+
+            if (isTestTab) {
                 chooseDataSimulationTime.setInt(500);
                 String t = chooseDataSimulationTime.getText();
                 diagramQueueToCashier.setHorizontalMaxText(t);
@@ -100,7 +104,7 @@ public class Main extends JFrame {
                 diagramCustomersInStore.setVerticalMaxText(
                         String.valueOf(chooseDataCashiers.getInt() * 3 + 1));
                 diagramLostCustomers.setVerticalMaxText("5");
-            } else if (tabbedPane.getSelectedComponent() == statPanel) {
+            } else if (selected == statPanel) {
                 chooseDataSimulationTime.setInt(10000);
             }
         } catch (Exception ex) { System.err.println(ex.getMessage()); }

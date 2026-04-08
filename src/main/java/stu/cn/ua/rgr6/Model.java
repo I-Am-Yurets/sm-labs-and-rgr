@@ -11,6 +11,7 @@ import widgets.experiments.IExperimentable;
 import widgets.stat.IStatisticsable;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -39,6 +40,7 @@ public class Model implements IStatisticsable, IExperimentable {
     private QueueForTransactions<Customer> queueToCashier;
     private Store customersInStore;
     private Store lostCustomers;
+    private Store busyCashiers;
 
     DiscretHisto histoQueueToCashier      = new DiscretHisto();
     Histo        histoCustomersInStore    = new Histo();
@@ -75,6 +77,7 @@ public class Model implements IStatisticsable, IExperimentable {
         getCustomersInStore().setPainter(gui.getDiagramCustomersInStore().getPainter());
         getQueueToCashier().setPainter(gui.getDiagramQueueToCashier().getPainter());
         getLostCustomers().setPainter(gui.getDiagramLostCustomers().getPainter());
+        getBusyCashiers().setPainter(gui.getDiagramCashierLoad().getPainter());
         dispatcher.setProtocolFileName(
                 paramConsoleLog ? "Console" : "");
     }
@@ -113,6 +116,7 @@ public class Model implements IStatisticsable, IExperimentable {
             cashier.setNameForProtocol("Касир");
             cashier.setHistoForActorWaitingTime(histoCashierWait);
             cashier.setQueueToCashier(getQueueToCashier());
+            cashier.setBusyCashiers(getBusyCashiers());
             cashier.setServiceRnd(paramServiceRnd);
             cashier.setFinishTime(paramFinishTime);
         }
@@ -157,6 +161,15 @@ public class Model implements IStatisticsable, IExperimentable {
         return lostCustomers;
     }
 
+    public Store getBusyCashiers() {
+        if (busyCashiers == null) {
+            busyCashiers = new Store();
+            busyCashiers.setNameForProtocol("Завантаженість касирів");
+            busyCashiers.setDispatcher(dispatcher);
+        }
+        return busyCashiers;
+    }
+
     // ─── IStatisticsable ───────────────────────────────────────────────────────
 
     @Override
@@ -186,7 +199,9 @@ public class Model implements IStatisticsable, IExperimentable {
 
     @Override
     public Map<String, Double> getResultOfExperiment() {
-        Map<String, Double> result = new HashMap<>();
+        // LinkedHashMap зберігає порядок вставки — перший ключ буде вибраний
+        // у комбо за замовчуванням, тому ставимо найцікавішу метрику першою
+        Map<String, Double> result = new LinkedHashMap<>();
         result.put("Середня черга до кас",              histoQueueToCashier.getAverage());
         result.put("Середній час обслуговування",       histoCustomerServiceTime.getAverage());
         result.put("Середня кількість втрачених",       histoLostCustomers.getAverage());

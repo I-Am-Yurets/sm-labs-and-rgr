@@ -93,7 +93,11 @@ public class Main extends JFrame {
 
     private void tabbedPaneStateChanged(ChangeEvent e) {
         try {
-            if (tabbedPane.getSelectedComponent() == testPanel) {
+            Component selected = tabbedPane.getSelectedComponent();
+            boolean isTestTab = (selected instanceof JScrollPane)
+                    && (((JScrollPane) selected).getViewport().getView() == testPanel);
+
+            if (isTestTab) {
                 chooseDataSimulationTime.setInt(500);
                 String t = chooseDataSimulationTime.getText();
                 diagramQueueToCashier.setHorizontalMaxText(t);
@@ -101,11 +105,12 @@ public class Main extends JFrame {
                 diagramLostCustomers.setHorizontalMaxText(t);
                 diagramCashierLoad.setHorizontalMaxText(t);
                 diagramCashierLoad.setVerticalMaxText(chooseDataCashiers.getText());
-                System.out.println("Switched to Test tab: sim time = 500");
-            } else if (tabbedPane.getSelectedComponent() == statPanel
-                    || tabbedPane.getSelectedComponent() == regresPanel) {
+                diagramQueueToCashier.setVerticalMaxText(chooseDataCashiers.getText());
+                diagramCustomersInStore.setVerticalMaxText(
+                        String.valueOf(chooseDataCashiers.getInt() * 3 + 1));
+                diagramLostCustomers.setVerticalMaxText("5");
+            } else if (selected == statPanel || selected == regresPanel) {
                 chooseDataSimulationTime.setInt(10000);
-                System.out.println("Switched to Stat/Regres tab: sim time = 10000");
             }
         } catch (Exception ex) { System.err.println(ex.getMessage()); }
     }
@@ -113,6 +118,22 @@ public class Main extends JFrame {
     // ─── startTest ────────────────────────────────────────────────────────────
 
     private void startTest(ActionEvent e) {
+        // Завжди оновлюємо межі осей перед запуском
+        try {
+            String simTime = chooseDataSimulationTime.getText();
+            diagramQueueToCashier.setHorizontalMaxText(simTime);
+            diagramCustomersInStore.setHorizontalMaxText(simTime);
+            diagramLostCustomers.setHorizontalMaxText(simTime);
+            diagramCashierLoad.setHorizontalMaxText(simTime);
+            diagramCashierLoad.setVerticalMaxText(chooseDataCashiers.getText());
+            diagramQueueToCashier.setVerticalMaxText(chooseDataCashiers.getText());
+            diagramCustomersInStore.setVerticalMaxText(
+                    String.valueOf(chooseDataCashiers.getInt() * 3 + 1));
+            diagramLostCustomers.setVerticalMaxText("5");
+        } catch (Exception ex) {
+            System.err.println("Error setting diagram axes: " + ex.getMessage());
+        }
+
         diagramQueueToCashier.clear();
         diagramCustomersInStore.clear();
         diagramLostCustomers.clear();
@@ -156,25 +177,7 @@ public class Main extends JFrame {
         regresPanel              = new JPanel();
         experimentManager        = new ExperimentManager();
         transientPanel           = new JPanel();
-        transProcessManager      = new TransProcessManager() {
-            @Override
-            public Dispatcher getDispatcher() {
-                // Завжди створюємо новий диспетчер, щоб можна було запускати повторно
-                try {
-                    java.lang.reflect.Field f = TransProcessManager.class.getDeclaredField("dispatcher");
-                    f.setAccessible(true);
-                    Dispatcher d = (Dispatcher) f.get(this);
-                    if (d == null || !d.getThread().isAlive()) {
-                        d = new Dispatcher();
-                        d.setProtocolFileName("");
-                        f.set(this, d);
-                    }
-                    return d;
-                } catch (Exception ex) {
-                    return super.getDispatcher();
-                }
-            }
-        };
+        transProcessManager      = new TransProcessManager();
         infoPanel                = new JPanel();
         photoPanel               = new JPanel();
         textInfoAuthor           = new JTextArea();
@@ -192,7 +195,7 @@ public class Main extends JFrame {
         chooseRandomCustomerArrival.setBorder(new CompoundBorder(new EtchedBorder(),
                 new TitledBorder(LineBorder.createBlackLineBorder(), "Інтервал приходу покупців",
                         TitledBorder.CENTER, TitledBorder.TOP, new Font("Segoe UI", Font.PLAIN, 14), Color.lightGray)));
-        chooseRandomCustomerArrival.setRandom(new Negexp(10));
+        chooseRandomCustomerArrival.setRandom(new Negexp(3));
         leftSettingModelPanel.add(chooseRandomCustomerArrival, "cell 0 1,aligny center,growy 0");
 
         chooseRandomShoppingTime.setBorder(new CompoundBorder(new EtchedBorder(),
@@ -204,7 +207,7 @@ public class Main extends JFrame {
         chooseRandomCashierService.setBorder(new CompoundBorder(new EtchedBorder(),
                 new TitledBorder(LineBorder.createBlackLineBorder(), "Час обслуговування касиром",
                         TitledBorder.CENTER, TitledBorder.TOP, new Font("Segoe UI", Font.PLAIN, 14), Color.lightGray)));
-        chooseRandomCashierService.setRandom(new Norm(5, 2));
+        chooseRandomCashierService.setRandom(new Norm(8, 2));
         leftSettingModelPanel.add(chooseRandomCashierService, "cell 0 3,aligny center,growy 0");
 
         //---- chooseRandomPurchasesPerCustomer ----

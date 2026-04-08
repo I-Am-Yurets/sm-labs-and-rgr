@@ -12,8 +12,8 @@ import widgets.stat.IStatisticsable;
 import widgets.trans.ITransMonitoring;
 import widgets.trans.ITransProcesable;
 
-import javax.swing.SwingUtilities;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -42,6 +42,7 @@ public class Model implements IStatisticsable, IExperimentable, ITransProcesable
     private QueueForTransactions<Customer> queueToCashier;
     private Store customersInStore;
     private Store lostCustomers;
+    private Store busyCashiers;
 
     DiscretHisto histoQueueToCashier      = new DiscretHisto();
     Histo        histoCustomersInStore    = new Histo();
@@ -78,6 +79,7 @@ public class Model implements IStatisticsable, IExperimentable, ITransProcesable
         getCustomersInStore().setPainter(gui.getDiagramCustomersInStore().getPainter());
         getQueueToCashier().setPainter(gui.getDiagramQueueToCashier().getPainter());
         getLostCustomers().setPainter(gui.getDiagramLostCustomers().getPainter());
+        getBusyCashiers().setPainter(gui.getDiagramCashierLoad().getPainter());
         dispatcher.setProtocolFileName(paramConsoleLog ? "Console" : "");
     }
 
@@ -90,7 +92,7 @@ public class Model implements IStatisticsable, IExperimentable, ITransProcesable
             customer.setQueueToCashier(getQueueToCashier());
             customer.setCustomersInStore(getCustomersInStore());
             customer.setLostCustomers(getLostCustomers());
-            customer.setMaxQueueSize(Integer.MAX_VALUE);
+            customer.setMaxQueueSize(5);
             customer.setMaxCustomersInStore(Integer.MAX_VALUE);
             customer.setArrivalRnd(paramArrivalRnd);
             customer.setShoppingRnd(paramShoppingRnd);
@@ -115,6 +117,7 @@ public class Model implements IStatisticsable, IExperimentable, ITransProcesable
             cashier.setNameForProtocol("Касир");
             cashier.setHistoForActorWaitingTime(histoCashierWait);
             cashier.setQueueToCashier(getQueueToCashier());
+            cashier.setBusyCashiers(getBusyCashiers());
             cashier.setServiceRnd(paramServiceRnd);
             cashier.setFinishTime(paramFinishTime);
         }
@@ -159,6 +162,15 @@ public class Model implements IStatisticsable, IExperimentable, ITransProcesable
         return lostCustomers;
     }
 
+    public Store getBusyCashiers() {
+        if (busyCashiers == null) {
+            busyCashiers = new Store();
+            busyCashiers.setNameForProtocol("Завантаженість касирів");
+            busyCashiers.setDispatcher(dispatcher);
+        }
+        return busyCashiers;
+    }
+
     // ─── IStatisticsable ──────────────────────────────────────────────────────
 
     @Override public void initForStatistics() { }
@@ -179,13 +191,23 @@ public class Model implements IStatisticsable, IExperimentable, ITransProcesable
 
     @Override
     public void initForExperiment(double factor) {
-        multiCashier.setNumberOfClones((int) factor);
-        multiCustomer.setNumberOfClones(Math.max(1, (int) factor * 3));
+        int n = (int) factor;
+        getMultiCashier().setNumberOfClones(n);
+        getMultiCustomer().setNumberOfClones(Math.max(1, n * 3));
+
+        histoQueueToCashier.init();
+        histoCustomersInStore.init();
+        histoLostCustomers.init();
+        histoCustomerWait.init();
+        histoCashierWait.init();
+        histoCustomerServiceTime.init();
     }
 
     @Override
     public Map<String, Double> getResultOfExperiment() {
-        Map<String, Double> result = new HashMap<>();
+        // LinkedHashMap зберігає порядок вставки — перший ключ буде вибраний
+        // у комбо за замовчуванням, тому ставимо найцікавішу метрику першою
+        Map<String, Double> result = new LinkedHashMap<>();
         result.put("Середня черга до кас",           histoQueueToCashier.getAverage());
         result.put("Середній час обслуговування",    histoCustomerServiceTime.getAverage());
         result.put("Середня кількість втрачених",    histoLostCustomers.getAverage());
@@ -198,17 +220,36 @@ public class Model implements IStatisticsable, IExperimentable, ITransProcesable
     public void initForTrans(double finishTime) {
         getCustomer().setFinishTime(finishTime);
         getCashier().setFinishTime(finishTime);
-        // GUI — тільки на EDT
-        SwingUtilities.invokeLater(
-                () -> gui.getChooseDataSimulationTime().setDouble(finishTime));
+        // Не оновлюємо GUI звідси — TransProcessManager керує часом сам,
+        // а виклики EDT з потоків моделей викликають залипання інтерфейсу
     }
 
-    @Override
+
+    /**
+     * Обгортка над ITransMonitoring, що повертає мінімум 0.001 замість 0.
+     * Потрібна через баг у TransProcessManager.onComboAction:
+     * при max==0 цикл while(max*k < 1) іде нескінченно і заморожує EDT.
+     */
+    private static class NonZeroMonitoring implements widgets.trans.ITransMonitoring {
+        private final widgets.trans.ITransMonitoring delegate;
+        NonZeroMonitoring(widgets.trans.ITransMonitoring delegate) {
+            this.delegate = delegate;
+        }
+        @Override public void resetAccum() { delegate.resetAccum(); }
+        @Override public double getAccumAverage() {
+            double v = delegate.getAccumAverage();
+            return v == 0.0 ? 0.001 : v;
+        }
+    }
+
     public Map<String, ITransMonitoring> getMonitoringObjects() {
-        Map<String, ITransMonitoring> map = new HashMap<>();
-        map.put("Черга до кас",     getQueueToCashier());
-        map.put("Покупці у залі",   getCustomersInStore());
-        map.put("Втрачені покупці", getLostCustomers());
+        // LinkedHashMap — фіксований порядок ключів для комбо і keyStrings[0]
+        // Всі метрики загорнуті в NonZeroMonitoring — захист від баgу бібліотеки
+        // (TransProcessManager.onComboAction зависає при max==0)
+        Map<String, ITransMonitoring> map = new LinkedHashMap<>();
+        map.put("Черга до кас",      new NonZeroMonitoring(getQueueToCashier()));
+        map.put("Покупці у залі",    new NonZeroMonitoring(getCustomersInStore()));
+        map.put("Втрачені покупці",  new NonZeroMonitoring(getLostCustomers()));
         return map;
     }
 }
