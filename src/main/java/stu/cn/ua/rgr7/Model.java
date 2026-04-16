@@ -30,8 +30,10 @@ public class Model implements IStatisticsable, IExperimentable, ITransProcesable
     private final rnd.Randomable paramArrivalRnd;
     private final rnd.Randomable paramShoppingRnd;
     private final rnd.Randomable paramServiceRnd;
+    private final rnd.Randomable paramPurchasesRnd;
     private final double paramFinishTime;
     private final int    paramCashiers;
+    private final int    paramMaxQueueSize;
     private final boolean paramConsoleLog;
 
     private Customer customer;
@@ -63,8 +65,10 @@ public class Model implements IStatisticsable, IExperimentable, ITransProcesable
         paramArrivalRnd          = g.getChooseRandomCustomerArrival().getRandom();
         paramShoppingRnd         = g.getChooseRandomShoppingTime().getRandom();
         paramServiceRnd          = g.getChooseRandomCashierService().getRandom();
+        paramPurchasesRnd        = g.getChooseRandomPurchasesPerCustomer().getRandom();
         paramFinishTime          = g.getChooseDataSimulationTime().getDouble();
         paramCashiers            = g.getChooseDataCashiers().getInt();
+        paramMaxQueueSize        = readMaxQueueFromGui(g);
         paramConsoleLog          = g.getConsoleLoggerCheckBox().isSelected();
 
         componentsToStartList();
@@ -73,6 +77,24 @@ public class Model implements IStatisticsable, IExperimentable, ITransProcesable
     private void componentsToStartList() {
         dispatcher.addStartingActor(getMultiCustomer());
         dispatcher.addStartingActor(getMultiCashier());
+    }
+
+    /**
+     * Сумісність із версіями Main, де ще немає getChooseDataMaxQueue().
+     */
+    private int readMaxQueueFromGui(Main g) {
+        try {
+            Object chooseData = g.getClass().getMethod("getChooseDataMaxQueue").invoke(g);
+            if (chooseData != null) {
+                Object value = chooseData.getClass().getMethod("getInt").invoke(chooseData);
+                if (value instanceof Integer) {
+                    return Math.max(1, (Integer) value);
+                }
+            }
+        } catch (Exception ignored) {
+            // fallback для старого GUI
+        }
+        return 5;
     }
 
     public void initForTest() {
@@ -92,10 +114,11 @@ public class Model implements IStatisticsable, IExperimentable, ITransProcesable
             customer.setQueueToCashier(getQueueToCashier());
             customer.setCustomersInStore(getCustomersInStore());
             customer.setLostCustomers(getLostCustomers());
-            customer.setMaxQueueSize(5);
+            customer.setMaxQueueSize(Math.max(1, paramMaxQueueSize));
             customer.setMaxCustomersInStore(Integer.MAX_VALUE);
             customer.setArrivalRnd(paramArrivalRnd);
             customer.setShoppingRnd(paramShoppingRnd);
+            customer.setPurchasesRnd(paramPurchasesRnd);
             customer.setFinishTime(paramFinishTime);
         }
         return customer;
@@ -191,9 +214,19 @@ public class Model implements IStatisticsable, IExperimentable, ITransProcesable
 
     @Override
     public void initForExperiment(double factor) {
-        int n = (int) factor;
+        int n = Math.max(1, (int) Math.round(factor));
         getMultiCashier().setNumberOfClones(n);
-        getMultiCustomer().setNumberOfClones(Math.max(1, n * 3));
+        // Кількість потоків покупців масштабується разом з касирами,
+        // щоб навантаження на систему залишалося пропорційним.
+        getMultiCustomer().setNumberOfClones(n * 3);
+        // Оновлюємо maxQueueSize у Customer, щоб відповідав поточному параметру GUI
+        getCustomer().setMaxQueueSize(Math.max(1, paramMaxQueueSize));
+
+        // Скидаємо Store-и: без цього getSize() накопичується між повторами
+        // одного й того самого рівня фактора і дає хибно завищені результати.
+        getLostCustomers().init();
+        getCustomersInStore().init();
+        getBusyCashiers().init();
 
         histoQueueToCashier.init();
         histoCustomersInStore.init();
@@ -206,11 +239,18 @@ public class Model implements IStatisticsable, IExperimentable, ITransProcesable
     @Override
     public Map<String, Double> getResultOfExperiment() {
         // LinkedHashMap зберігає порядок вставки — перший ключ буде вибраний
-        // у комбо за замовчуванням, тому ставимо найцікавішу метрику першою
+        // у комбо за замовчуванням, тому ставимо найцікавішу метрику першою.
+        //
+        // ВАЖЛИВО: для "Втрачених покупців" використовуємо getSize() Store-а,
+        // а не histoLostCustomers.getAverage(). Store.histo записує значення
+        // зважено за часом (addFrequencyForValue(dt, поточний_розмір)), тому
+        // getAverage() повертає середній розмір у часі — що зростає монотонно
+        // і завжди > 0 після першої відмови. getSize() — це проста сума add(1),
+        // тобто загальна кількість відмов за моделювання (коректна метрика).
         Map<String, Double> result = new LinkedHashMap<>();
         result.put("Середня черга до кас",           histoQueueToCashier.getAverage());
         result.put("Середній час обслуговування",    histoCustomerServiceTime.getAverage());
-        result.put("Середня кількість втрачених",    histoLostCustomers.getAverage());
+        result.put("Загальна кількість втрачених",   getLostCustomers().getSize());
         return result;
     }
 

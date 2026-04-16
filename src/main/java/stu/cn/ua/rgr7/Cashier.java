@@ -28,17 +28,24 @@ public class Cashier extends Actor {
     protected void rule() throws DispatcherFinishException {
         BooleanSupplier hasCustomer = () -> queueToCashier.size() > 0;
 
-        while (getDispatcher().getCurrentTime() <= finishTime) {
+        while (true) {
             waitForCondition(hasCustomer, "поки з'явиться покупець");
             Customer customer = queueToCashier.removeFirst();
             getDispatcher().printToProtocol(
                     getNameForProtocol() + " обслуговує " + customer.getNameForProtocol());
             if (busyCashiers != null) busyCashiers.add(1);
-            holdForTime(serviceRnd.next());
+            int purchases = Math.max(1, customer.getPurchases());
+            double servicePerItem = Math.max(0.001, serviceRnd.next());
+            holdForTime(servicePerItem * purchases);
             if (busyCashiers != null) busyCashiers.remove(1);
             getDispatcher().printToProtocol(
                     getNameForProtocol() + " завершив обслуговування " + customer.getNameForProtocol());
             customer.markServed();
+
+            // Після завершення часу моделювання доробляємо лише поточну чергу.
+            if (getDispatcher().getCurrentTime() > finishTime && queueToCashier.size() == 0) {
+                break;
+            }
         }
     }
 

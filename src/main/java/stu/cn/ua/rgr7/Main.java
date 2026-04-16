@@ -59,6 +59,7 @@ public class Main extends JFrame {
     public ChooseRandom getChooseRandomShoppingTime()      { return chooseRandomShoppingTime; }
     public ChooseRandom getChooseRandomCashierService()    { return chooseRandomCashierService; }
     public ChooseData   getChooseDataCashiers()            { return chooseDataCashiers; }
+    public ChooseData   getChooseDataMaxQueue()            { return chooseDataMaxQueue; }
     public ChooseRandom getChooseRandomPurchasesPerCustomer() { return chooseRandomPurchasesPerCustomer; }
     public ChooseData   getChooseDataSimulationTime()      { return chooseDataSimulationTime; }
     public Diagram      getDiagramQueueToCashier()         { return diagramQueueToCashier; }
@@ -71,23 +72,19 @@ public class Main extends JFrame {
 
     private void chooseDataCashiersCaretUpdate(CaretEvent e) {
         if (testPanel.isShowing()) {
-            try {
-                diagramCashierLoad.setVerticalMaxText(chooseDataCashiers.getText());
-            } catch (Exception ex) {
-                System.err.println("Error: " + ex.getMessage());
-            }
+            updateTestDiagramBounds();
         }
     }
 
     private void chooseDataSimulationTimeCaretUpdate(CaretEvent e) {
         if (testPanel.isShowing()) {
-            try {
-                String t = chooseDataSimulationTime.getText();
-                diagramQueueToCashier.setHorizontalMaxText(t);
-                diagramCustomersInStore.setHorizontalMaxText(t);
-                diagramLostCustomers.setHorizontalMaxText(t);
-                diagramCashierLoad.setHorizontalMaxText(t);
-            } catch (Exception ex) { System.err.println(ex.getMessage()); }
+            updateTestDiagramBounds();
+        }
+    }
+
+    private void chooseDataMaxQueueCaretUpdate(CaretEvent e) {
+        if (testPanel.isShowing()) {
+            updateTestDiagramBounds();
         }
     }
 
@@ -98,19 +95,7 @@ public class Main extends JFrame {
                     && (((JScrollPane) selected).getViewport().getView() == testPanel);
 
             if (isTestTab) {
-                chooseDataSimulationTime.setInt(500);
-                String t = chooseDataSimulationTime.getText();
-                diagramQueueToCashier.setHorizontalMaxText(t);
-                diagramCustomersInStore.setHorizontalMaxText(t);
-                diagramLostCustomers.setHorizontalMaxText(t);
-                diagramCashierLoad.setHorizontalMaxText(t);
-                diagramCashierLoad.setVerticalMaxText(chooseDataCashiers.getText());
-                diagramQueueToCashier.setVerticalMaxText(chooseDataCashiers.getText());
-                diagramCustomersInStore.setVerticalMaxText(
-                        String.valueOf(chooseDataCashiers.getInt() * 3 + 1));
-                diagramLostCustomers.setVerticalMaxText("5");
-            } else if (selected == statPanel || selected == regresPanel) {
-                chooseDataSimulationTime.setInt(10000);
+                updateTestDiagramBounds();
             }
         } catch (Exception ex) { System.err.println(ex.getMessage()); }
     }
@@ -119,20 +104,7 @@ public class Main extends JFrame {
 
     private void startTest(ActionEvent e) {
         // Завжди оновлюємо межі осей перед запуском
-        try {
-            String simTime = chooseDataSimulationTime.getText();
-            diagramQueueToCashier.setHorizontalMaxText(simTime);
-            diagramCustomersInStore.setHorizontalMaxText(simTime);
-            diagramLostCustomers.setHorizontalMaxText(simTime);
-            diagramCashierLoad.setHorizontalMaxText(simTime);
-            diagramCashierLoad.setVerticalMaxText(chooseDataCashiers.getText());
-            diagramQueueToCashier.setVerticalMaxText(chooseDataCashiers.getText());
-            diagramCustomersInStore.setVerticalMaxText(
-                    String.valueOf(chooseDataCashiers.getInt() * 3 + 1));
-            diagramLostCustomers.setVerticalMaxText("5");
-        } catch (Exception ex) {
-            System.err.println("Error setting diagram axes: " + ex.getMessage());
-        }
+        updateTestDiagramBounds();
 
         diagramQueueToCashier.clear();
         diagramCustomersInStore.clear();
@@ -159,6 +131,7 @@ public class Main extends JFrame {
         chooseRandomShoppingTime     = new ChooseRandom();
         chooseRandomCashierService   = new ChooseRandom();
         chooseDataCashiers           = new ChooseData();
+        chooseDataMaxQueue           = new ChooseData();
         chooseRandomPurchasesPerCustomer = new ChooseRandom();
         chooseDataSimulationTime     = new ChooseData();
         tabbedPane               = new JTabbedPane();
@@ -187,7 +160,7 @@ public class Main extends JFrame {
 
         // ── Left panel ────────────────────────────────────────────────────────
         leftSettingModelPanel.setLayout(new MigLayout("hidemode 3,aligny center", "[262,fill]",
-                "[][][][][][][]"));
+                "[][][][][][][][]"));
         Title.setText("Параметри системи, що досліджується");
         Title.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         leftSettingModelPanel.add(Title, "cell 0 0,alignx center,growx 0");
@@ -233,6 +206,19 @@ public class Main extends JFrame {
         chooseDataCashiers.setInt(3);
         leftSettingModelPanel.add(chooseDataCashiers, "cell 0 5,aligny center,growy 0");
 
+        //---- chooseDataMaxQueue ----
+        chooseDataMaxQueue.setTitle("Макс. черга до каси");
+        chooseDataMaxQueue.setBorder(new CompoundBorder(
+                new TitledBorder(new EtchedBorder(EtchedBorder.RAISED),
+                        "Макс. черга до каси", TitledBorder.CENTER, TitledBorder.BELOW_TOP,
+                        new Font("Dialog", Font.PLAIN, 14)),
+                new BevelBorder(BevelBorder.LOWERED)));
+        chooseDataMaxQueue.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        chooseDataMaxQueue.setMinimumSize(new Dimension(50, 55));
+        chooseDataMaxQueue.addCaretListener(e -> chooseDataMaxQueueCaretUpdate(e));
+        chooseDataMaxQueue.setInt(5);
+        leftSettingModelPanel.add(chooseDataMaxQueue, "cell 0 6,aligny center,growy 0");
+
         //---- chooseDataSimulationTime ----
         chooseDataSimulationTime.setTitle("Час моделювання");
         chooseDataSimulationTime.setBorder(new CompoundBorder(
@@ -244,7 +230,7 @@ public class Main extends JFrame {
         chooseDataSimulationTime.setMinimumSize(new Dimension(50, 55));
         chooseDataSimulationTime.addCaretListener(e -> chooseDataSimulationTimeCaretUpdate(e));
         chooseDataSimulationTime.setInt(500);
-        leftSettingModelPanel.add(chooseDataSimulationTime, "cell 0 6,aligny center,growy 0");
+        leftSettingModelPanel.add(chooseDataSimulationTime, "cell 0 7,aligny center,growy 0");
 
         splitPane.setLeftComponent(leftSettingModelPanel);
 
@@ -291,7 +277,9 @@ public class Main extends JFrame {
 
         // Regres tab
         regresPanel.setLayout(new MigLayout("hidemode 3", "[646,grow,fill]", "[grow]rel"));
-        experimentManager.getChooseDataRepeat().setTitle("Кількість касирів");
+        experimentManager.getChooseDataFactors().setTitle("Фактор: кількість касирів");
+        experimentManager.getChooseDataFactors().setText("1 3 5 7 9 12 14");
+        experimentManager.getChooseDataRepeat().setTitle("Кількість повторів");
         regresPanel.add(experimentManager, "cell 0 0,grow");
         tabbedPane.addTab("Регресія", regresPanel);
 
@@ -329,6 +317,39 @@ public class Main extends JFrame {
         d.setGridColor(new Color(0xcccccc));
         d.setPainterColor(painterColor);
         d.setGridByX(10);
+    }
+
+    private void updateTestDiagramBounds() {
+        try {
+            int simTime = getSafeInt(chooseDataSimulationTime, 500, 1);
+            int cashiers = getSafeInt(chooseDataCashiers, 3, 1);
+            int maxQueue = getSafeInt(chooseDataMaxQueue, 5, 1);
+            String simTimeText = String.valueOf(simTime);
+
+            diagramQueueToCashier.setHorizontalMaxText(simTimeText);
+            diagramCustomersInStore.setHorizontalMaxText(simTimeText);
+            diagramLostCustomers.setHorizontalMaxText(simTimeText);
+            diagramCashierLoad.setHorizontalMaxText(simTimeText);
+
+            diagramCashierLoad.setVerticalMaxText(String.valueOf(cashiers));
+            diagramQueueToCashier.setVerticalMaxText(String.valueOf(maxQueue));
+            diagramCustomersInStore.setVerticalMaxText(String.valueOf(Math.max(5, cashiers * 4)));
+            diagramLostCustomers.setVerticalMaxText(String.valueOf(Math.max(5, maxQueue)));
+        } catch (Exception ex) {
+            System.err.println("Error setting diagram axes: " + ex.getMessage());
+        }
+    }
+
+    private int getSafeInt(ChooseData chooseData, int defaultValue, int minValue) {
+        try {
+            String text = chooseData.getText();
+            if (text == null || text.trim().isEmpty()) {
+                return Math.max(minValue, defaultValue);
+            }
+            return Math.max(minValue, Integer.parseInt(text.trim()));
+        } catch (Exception ignore) {
+            return Math.max(minValue, defaultValue);
+        }
     }
 
     private void buildInfoPanel() {
@@ -382,6 +403,7 @@ public class Main extends JFrame {
     private ChooseRandom chooseRandomShoppingTime;
     private ChooseRandom chooseRandomCashierService;
     private ChooseData chooseDataCashiers;
+    private ChooseData chooseDataMaxQueue;
     private ChooseRandom chooseRandomPurchasesPerCustomer;
     private ChooseData chooseDataSimulationTime;
     private JTabbedPane tabbedPane;
